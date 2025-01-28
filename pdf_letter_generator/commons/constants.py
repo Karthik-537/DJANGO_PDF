@@ -80,7 +80,7 @@ class PDFMargins:
     INDENT_LARGE = 0.75 * inch
 
     # Block spacing
-    BLOCK_SPACING = 12
+    BLOCK_SPACING = 24
     HEADING_SPACING = 0.15 * inch
 
     # Header Block
@@ -112,7 +112,7 @@ class PDFTextStyles:
     """
 
     DEFAULT_FONT = REGULAR_FONT
-    DEFAULT_FONT_SIZE = 8
+    DEFAULT_FONT_SIZE = 12
     DEFAULT_BOLD_FONT = BOLD_FONT
     DEFAULT_LEADING = 10
     DEFAULT_ALIGNMENT = "LEFT"
@@ -124,28 +124,34 @@ class PDFTextStyles:
 
         FONT = BOLD_FONT
         SIZE = 16
-        COLOR = colors.black
-        ALIGNMENT = "left"
+        COLOR = colors.HexColor("#101828")
         SPACE_BEFORE = 10
         SPACE_AFTER = 0
 
     class SubHeader:
-        """Body text style configuration."""
+        """SubHeader text style configuration."""
 
-        FONT = BOLD_FONT
-        SIZE = 13
-        COLOR = black
-        ALIGNMENT = "left"
+        FONT = REGULAR_FONT
+        SIZE = 16
+        COLOR = colors.HexColor("#101828")
         SPACE_BEFORE = 7
         SPACE_AFTER = 0
 
-    class RightBlock:
-        """Body text style configuration."""
+    class SubSubHeader:
+        """SubSubHeader text style configuration."""
 
-        FONT = BOLD_FONT
+        FONT = REGULAR_FONT
+        SIZE = 14
+        COLOR = colors.HexColor("#101828")
+        SPACE_BEFORE = 5
+        SPACE_AFTER = 0
+
+    class RightBlock:
+        """RightBlok text style configuration."""
+
+        FONT = REGULAR_FONT
         SIZE = 16
-        COLOR = colors.green
-        ALIGNMENT = "left"
+        COLOR = colors.HexColor("#039855")
         SPACE_BEFORE = 7
         SPACE_AFTER = 0
 
@@ -258,7 +264,7 @@ class ParagraphBlockStyles:
 
         FONT = BOLD_FONT
         SIZE = 12
-        COLOR = black
+        COLOR = colors.HexColor("#344054")
         ALIGNMENT = TA_LEFT
         LINE_SPACING = 1.2
         SPACE_AFTER = 0.25
@@ -270,12 +276,12 @@ class ParagraphBlockStyles:
         """Body text styling configuration for paragraph blocks."""
 
         FONT = REGULAR_FONT
-        SIZE = 10
-        COLOR = black
+        SIZE = 12
+        COLOR = colors.HexColor("#1D2939")
         ALIGNMENT = (
             TA_LEFT  # Changed from justify to left for better readability
         )
-        LINE_SPACING = 2
+        LINE_SPACING = 1.5
         SPACE_AFTER = 0.25
         INDENT = PDFMargins.INDENT_SMALL
         FIRST_LINE_INDENT = 0
@@ -433,10 +439,10 @@ class GridBlockStyles:
         """Body text styling configuration for grid blocks."""
 
         FONT = REGULAR_FONT
-        SIZE = 10
-        COLOR = black
+        SIZE = 12
+        COLOR = colors.HexColor("#1D2939")
         ALIGNMENT = TA_LEFT
-        LINE_SPACING = 0.5
+        LINE_SPACING = 1
         SPACE_AFTER = 0.25
         INDENT = 0.25 * inch
         FIRST_LINE_INDENT = 0

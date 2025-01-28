@@ -3,7 +3,7 @@ Utilities for PDF block generation and validation
 """
 from reportlab.lib.units import inch
 
-from plugins.interactors.dms.pdf_blocks.pdf_config import PDFConfig
+from pdf_letter_generator.pdf_blocks.pdf_config import PDFConfig
 
 
 class ValidationError(Exception):

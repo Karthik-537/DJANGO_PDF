@@ -15,16 +15,14 @@ from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
 
-from plugins.interactors.dms.pdf_blocks.pdf_config import PDFConfig
-from plugins.interactors.dms.pdf_flowable_blocks.paragraph_block import (
-    ParagraphBlockV2,
-)
-from plugins.pdf_letter_generator.commons import (
+from pdf_letter_generator.pdf_blocks.pdf_config import PDFConfig
+from pdf_flowable_blocks.pdf_flowable_blocks.paragraph_block import ParagraphBlockV2
+from pdf_letter_generator.commons import (
     ParagraphBlockStyles,
     PDFLineSpacing,
     PDFTextStyles,
 )
-from plugins.pdf_letter_generator.commons.text_utils import sanitize
+from pdf_letter_generator.commons.text_utils import sanitize
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -36,9 +34,9 @@ class CellConfig:
 
     value: Any
     width: float  # Width as percentage (0-100)
-    align: str = "LEFT"
+    align: str = "MIDDLE"
     bold: bool = False
-    font_size: Optional[float] = None
+    font_size: Optional[float] = 12
     background_color: Optional[Any] = None
     text_color: Optional[Any] = None
     colspan: int = 1
@@ -137,15 +135,15 @@ class GenericTableBlockV2:
     @staticmethod
     def _create_row_style(borders: bool) -> TableStyle:
         style_commands = [
-            ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
             ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("TOPPADDING", (0, 0), (-1, -1), PDFTextStyles.DEFAULT_PADDING),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), PDFTextStyles.DEFAULT_PADDING),
-            ("LEFTPADDING", (0, 0), (-1, -1), PDFTextStyles.DEFAULT_PADDING),
-            ("RIGHTPADDING", (0, 0), (-1, -1), PDFTextStyles.DEFAULT_PADDING),
+            ("TOPPADDING", (0, 0), (-1, -1), 0),
+            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+            ("LEFTPADDING", (0, 0), (-1, -1), 12),
+            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
             ("TEXTCOLOR", (0, 0), (-1, -1), PDFTextStyles.DEFAULT_COLOR),
             ("FONTNAME", (0, 0), (-1, -1), PDFTextStyles.DEFAULT_FONT),
-            ("FONTSIZE", (0, 0), (-1, -1), PDFTextStyles.DEFAULT_FONT_SIZE),
+            ("FONTSIZE", (0, 0), (-1, -1), PDFTextStyles.DEFAULT_FONT_SIZE)
         ]
 
         if borders:
@@ -238,7 +236,7 @@ class GenericTableBlockV2:
                     col_idx += cell.colspan
 
                 row_table = Table(
-                    [row_data], colWidths=row_widths, style=row_style
+                    [row_data], colWidths=row_widths, rowHeights=[row.height], style=row_style
                 )
 
                 container_table = Table(
@@ -249,7 +247,7 @@ class GenericTableBlockV2:
                             ("TOPPADDING", (0, 0), (-1, -1), 0),
                             ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
                             ("LEFTPADDING", (0, 0), (-1, -1), 0),
-                            ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                            ("RIGHTPADDING", (0, 0), (-1, -1), 0)
                         ]
                     ),
                 )

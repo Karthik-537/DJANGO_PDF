@@ -15,7 +15,7 @@ from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
 
-from plugins.pdf_letter_generator.commons.constants import GridBlockStyles
+from pdf_letter_generator.commons.constants import GridBlockStyles
 
 logger = logging.getLogger(__name__)
 
@@ -87,15 +87,16 @@ class GridBlockV2:
                     leading=style.size * style.line_spacing,
                     spaceAfter=style.size * style.space_after,
                     alignment=style.alignment,
+                    line_spacing=style.line_spacing,
                     wordWrap=GridBlockStyles.Header.WORD_WRAP,
-                    leftIndent=GridBlockStyles.INDENT_LEVELS[0]
-                    if name == "grid"
-                    else 0,
-                    firstLineIndent=GridBlockStyles.Body.FIRST_LINE_INDENT
-                    if name == "grid"
-                    else 0,
-                    allowWidows=0,
-                    allowOrphans=0,
+                    # leftIndent=GridBlockStyles.INDENT_LEVELS[0]
+                    # if name == "grid"
+                    # else 0,
+                    # firstLineIndent=GridBlockStyles.Body.FIRST_LINE_INDENT
+                    # if name == "grid"
+                    # else 0,
+                    # allowWidows=0,
+                    # allowOrphans=0,
                 )
             )
 

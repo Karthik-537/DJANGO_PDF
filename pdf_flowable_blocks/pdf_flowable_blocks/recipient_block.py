@@ -10,20 +10,13 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Union
 
 from commons.constants import (
-    PDFLineSpacing,
-    PDFMargins,
-    PDFTextStyles,
     RecipientBlockStyles,
 )
-from pdf_config import PDFConfig
-from reportlab.lib import colors
-from reportlab.lib.colors import black
-from reportlab.lib.enums import TA_LEFT, TA_RIGHT
+from pdf_letter_generator.pdf_blocks.pdf_config import PDFConfig
+from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import inch
 from reportlab.platypus import (
-    CondPageBreak,
-    KeepTogether,
     Paragraph,
     Spacer,
     Table,

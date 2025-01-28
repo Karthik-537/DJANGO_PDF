@@ -20,13 +20,14 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from plugins.interactors.dms.pdf_blocks.pdf_config import PDFConfig
-from plugins.pdf_letter_generator.commons import (
+from pdf_letter_generator.pdf_blocks.pdf_config import PDFConfig
+from pdf_letter_generator.commons import (
     PDFLineSpacing,
     PDFTableSpacing,
     PDFTextStyles,
 )
-from plugins.pdf_letter_generator.commons.logo_handler import LogoHandler
+from pdf_letter_generator.commons.logo_handler import LogoHandler
+from reportlab.lib import colors
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -76,8 +77,21 @@ class HeaderBlockV2:
                 textColor=PDFTextStyles.SubHeader.COLOR,
                 leading=PDFTextStyles.SubHeader.SIZE * PDFLineSpacing.SINGLE,
                 alignment=TA_CENTER,
-                spaceBefore=PDFTextStyles.SubHeader.SPACE_BEFORE,
-                spaceAfter=PDFTextStyles.SubHeader.SPACE_AFTER,
+                spaceBefore=PDFTextStyles.SubSubHeader.SPACE_BEFORE,
+                spaceAfter=PDFTextStyles.SubSubHeader.SPACE_AFTER,
+            )
+        )
+
+        stylesheet.add(
+            ParagraphStyle(
+                "subsubheader",
+                fontName=PDFTextStyles.SubSubHeader.FONT,
+                fontSize=PDFTextStyles.SubSubHeader.SIZE,
+                textColor=PDFTextStyles.SubSubHeader.COLOR,
+                leading=PDFTextStyles.SubSubHeader.SIZE * PDFLineSpacing.SINGLE,
+                alignment=TA_CENTER,
+                spaceBefore=PDFTextStyles.Header.SPACE_BEFORE,
+                spaceAfter=PDFTextStyles.Header.SPACE_AFTER,
             )
         )
 
@@ -135,7 +149,7 @@ class HeaderBlockV2:
 
         if sub_sub_header_text:
             content.append(
-                Paragraph(sub_sub_header_text, self.stylesheet["subheader"])
+                Paragraph(sub_sub_header_text, self.stylesheet["subsubheader"])
             )
 
         return content or [Spacer(1, 1)]
@@ -191,7 +205,7 @@ class HeaderBlockV2:
             # Create table with proper styling
             table_style = TableStyle(
                 [
-                    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                    ("ALIGN", (0, 0), (-1, -1), "LEFT"),
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
                     (
                         "LEFTPADDING",
@@ -210,10 +224,10 @@ class HeaderBlockV2:
                 ]
             )
 
-            table = Table(table_data, colWidths=col_widths, style=table_style)
+            table = Table(table_data, colWidths=[72,310,82], style=table_style)
 
             # Wrap table in KeepTogether to prevent page breaks within header
-            flowables = [KeepTogether(table), Spacer(1, 32)]
+            flowables = [KeepTogether(table), Spacer(1, 16)]
 
             return flowables
 
