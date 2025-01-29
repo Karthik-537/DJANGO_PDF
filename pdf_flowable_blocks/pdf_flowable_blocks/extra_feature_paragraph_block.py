@@ -13,20 +13,25 @@ from pdf_flowable_blocks.pdf_flowable_blocks.grid_block import GridBlockV2
 from pdf_letter_generator.pdf_blocks.pdf_config import PDFConfig
 class ExtraFeatureParagraph:
     def create_feature_paragraph_flowables(self,
-            lines:list[str],
-            heading: Optional[str] = None,
-            grid_units: Optional[List[Dict]] = None,
-            heading_spacing: float = GridBlockStyles.DEFAULT_HEADING_SPACING,
+            header_right_text:str, header_left_text:str, lines:Optional[list[str]]=None,
             grid_spacing: float = GridBlockStyles.GRID_SPACING["DEFAULT"]
             ):
+        grid_units = [
+            {
+                "text_lines": [header_right_text],
+                "unit_width": 70,
+                "alignment": "LEFT",
+            },
+            {
+                "text_lines": [header_left_text],
+                "unit_width": 32,
+                "alignment": "RIGHT",
+            },
+        ]
+
         flowables = []
 
         grid_block = GridBlockV2()
-
-        if heading:
-            header_para = Paragraph(heading, self.stylesheet["header"])
-            flowables.append(header_para)
-            flowables.append(Spacer(1, heading_spacing))
 
         if grid_units:
 
@@ -35,6 +40,7 @@ class ExtraFeatureParagraph:
             col_widths = [
                 "{}%".format(unit["unit_width"]) for unit in grid_units
             ]
+
             table = Table(cells, colWidths=col_widths)
             table.setStyle(
                 TableStyle(
@@ -56,9 +62,9 @@ class ExtraFeatureParagraph:
         flowables.append(line)
         flowables.append(Spacer(0, 12))
 
-
-        paragraph_block = ParagraphBlockV2()
-        body_para = paragraph_block.create_flowables(lines=lines)
-        flowables.extend(body_para)
+        if lines:
+            paragraph_block = ParagraphBlockV2()
+            body_para = paragraph_block.create_flowables(lines=lines)
+            flowables.extend(body_para)
 
         return flowables

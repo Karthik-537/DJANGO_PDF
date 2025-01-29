@@ -123,7 +123,7 @@ class PDFTextStyles:
         """Header text style configuration."""
 
         FONT = BOLD_FONT
-        SIZE = 16
+        SIZE = 12
         COLOR = colors.HexColor("#101828")
         SPACE_BEFORE = 10
         SPACE_AFTER = 0
@@ -132,7 +132,7 @@ class PDFTextStyles:
         """SubHeader text style configuration."""
 
         FONT = REGULAR_FONT
-        SIZE = 16
+        SIZE = 12
         COLOR = colors.HexColor("#101828")
         SPACE_BEFORE = 7
         SPACE_AFTER = 0
@@ -141,7 +141,7 @@ class PDFTextStyles:
         """SubSubHeader text style configuration."""
 
         FONT = REGULAR_FONT
-        SIZE = 14
+        SIZE = 12
         COLOR = colors.HexColor("#101828")
         SPACE_BEFORE = 5
         SPACE_AFTER = 0
@@ -438,7 +438,7 @@ class GridBlockStyles:
     class Body:
         """Body text styling configuration for grid blocks."""
 
-        FONT = REGULAR_FONT
+        FONT = BOLD_FONT
         SIZE = 12
         COLOR = colors.HexColor("#1D2939")
         ALIGNMENT = TA_LEFT

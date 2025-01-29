@@ -221,10 +221,13 @@ class HeaderBlockV2:
                     ),
                     ("TOPPADDING", (0, 0), (-1, -1), 0),
                     ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                    # ("BACKGROUND", (0,0), (0,0), "RED"),
+                    # ("BACKGROUND", (1,0), (1,0), "YELLOW"),
+                    # ("BACKGROUND", (2,0),(2,0),"BLUE"),
                 ]
             )
 
-            table = Table(table_data, colWidths=[72,310,82], style=table_style)
+            table = Table(table_data, colWidths=col_widths, style=table_style)
 
             # Wrap table in KeepTogether to prevent page breaks within header
             flowables = [KeepTogether(table), Spacer(1, 16)]
