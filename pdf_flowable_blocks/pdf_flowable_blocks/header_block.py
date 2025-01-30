@@ -37,12 +37,12 @@ class HeaderBlockV2:
     """Class to handle the creation and management of PDF header blocks using Platypus."""
 
     # Width percentages for different sections
-    LOGO_WIDTH_PERCENT = 0.10
-    CENTER_WIDTH_PERCENT = 0.70
+    LOGO_WIDTH_PERCENT = 0.12
+    CENTER_WIDTH_PERCENT = 0.68
     RIGHT_WIDTH_PERCENT = 0.20
 
     # Line spacing between headings
-    HEADING_LINE_SPACING = PDFLineSpacing.ONE_POINT_FIVE
+    HEADING_LINE_SPACING = PDFLineSpacing.TEN
 
     # Center block padding (in inches)
     CENTER_BLOCK_PADDING = PDFTableSpacing.HEADING_BLOCK_SPACING
@@ -64,8 +64,8 @@ class HeaderBlockV2:
                 textColor=PDFTextStyles.Header.COLOR,
                 leading=PDFTextStyles.Header.SIZE * PDFLineSpacing.SINGLE,
                 alignment=TA_CENTER,
-                spaceBefore=PDFTextStyles.Header.SPACE_BEFORE,
-                spaceAfter=PDFTextStyles.Header.SPACE_AFTER,
+                # spaceBefore=PDFTextStyles.Header.SPACE_BEFORE,
+                # spaceAfter=PDFTextStyles.Header.SPACE_AFTER,
             )
         )
 
@@ -77,8 +77,8 @@ class HeaderBlockV2:
                 textColor=PDFTextStyles.SubHeader.COLOR,
                 leading=PDFTextStyles.SubHeader.SIZE * PDFLineSpacing.SINGLE,
                 alignment=TA_CENTER,
-                spaceBefore=PDFTextStyles.SubSubHeader.SPACE_BEFORE,
-                spaceAfter=PDFTextStyles.SubSubHeader.SPACE_AFTER,
+                # spaceBefore=PDFTextStyles.SubSubHeader.SPACE_BEFORE,
+                # spaceAfter=PDFTextStyles.SubSubHeader.SPACE_AFTER,
             )
         )
 
@@ -90,8 +90,8 @@ class HeaderBlockV2:
                 textColor=PDFTextStyles.SubSubHeader.COLOR,
                 leading=PDFTextStyles.SubSubHeader.SIZE * PDFLineSpacing.SINGLE,
                 alignment=TA_CENTER,
-                spaceBefore=PDFTextStyles.Header.SPACE_BEFORE,
-                spaceAfter=PDFTextStyles.Header.SPACE_AFTER,
+                # spaceBefore=PDFTextStyles.Header.SPACE_BEFORE,
+                # spaceAfter=PDFTextStyles.Header.SPACE_AFTER,
             )
         )
 
@@ -103,8 +103,8 @@ class HeaderBlockV2:
                 textColor=PDFTextStyles.RightBlock.COLOR,
                 leading=PDFTextStyles.RightBlock.SIZE * PDFLineSpacing.SINGLE,
                 alignment=TA_CENTER,
-                spaceBefore=PDFTextStyles.RightBlock.SPACE_BEFORE,
-                spaceAfter=PDFTextStyles.RightBlock.SPACE_AFTER,
+                # spaceBefore=PDFTextStyles.RightBlock.SPACE_BEFORE,
+                # spaceAfter=PDFTextStyles.RightBlock.SPACE_AFTER,
             )
         )
 
@@ -205,14 +205,14 @@ class HeaderBlockV2:
             # Create table with proper styling
             table_style = TableStyle(
                 [
-                    ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                    # ("ALIGN", (0, 0), (-1, -1), "LEFT"),
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    (
-                        "LEFTPADDING",
-                        (0, 0),
-                        (-1, -1),
-                        self.CENTER_BLOCK_PADDING,
-                    ),
+                    # (
+                    #     "LEFTPADDING",
+                    #     (0, 0),
+                    #     (-1, -1),
+                    #     self.CENTER_BLOCK_PADDING,
+                    # ),
                     (
                         "RIGHTPADDING",
                         (0, 0),

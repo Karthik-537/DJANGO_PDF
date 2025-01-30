@@ -13,7 +13,7 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.styles import ListStyle, ParagraphStyle, StyleSheet1
 from reportlab.platypus import ListFlowable, ListItem, Paragraph, Spacer
 
-from plugins.pdf_letter_generator.commons.constants import (
+from pdf_letter_generator.commons.constants import (
     ListBlockStyles,
     PresentationType,
 )
@@ -189,6 +189,7 @@ class ListBlockV2:
                 # Wrap in KeepTogether to prevent awkward breaks
                 flowables.append(list_flowable)
                 # flowables.append(Spacer(1, item_spacing))
+            flowables.append(Spacer(1,24))
 
             return flowables
 

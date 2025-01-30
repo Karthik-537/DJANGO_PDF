@@ -1,17 +1,20 @@
-from reportlab.platypus import SimpleDocTemplate
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import  ParagraphStyle
 from pdf_flowable_blocks.pdf_flowable_blocks.paragraph_block import ParagraphBlockV2
 from pdf_flowable_blocks.pdf_flowable_blocks.header_block import HeaderBlockV2
 from pdf_flowable_blocks.pdf_flowable_blocks.generic_table_block import GenericTableBlockV2
 from pdf_flowable_blocks.pdf_flowable_blocks.generic_table_block import CellConfig, RowConfig
-#from pdf_flowable_blocks.pdf_flowable_blocks.grid_block import GridBlockV2
+from reportlab.lib.enums import TA_CENTER
+from pdf_flowable_blocks.pdf_flowable_blocks.grid_block import GridBlockV2
+from pdf_flowable_blocks.pdf_flowable_blocks.list_block import ListBlockV2
 
 def generate_pdf_for_letter():
     doc = SimpleDocTemplate("pc_documents.pdf", pagesize=letter, leftMargin=48, \
                             rightMargin=48, topMargin=50, bottomMargin=50)
     story = []
     logo_url = "https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png"
-    header_text = "If “Title 1” has 2 lines height of the heading "
+    header_text = "If “Title 1” has 2 lines height of the heading"
     sub_header_text = "If “Title 2” has long text of the heading be here"
     sub_sub_header_text = "If “Title 3” has long text of the heading be here"
     sub_sub_header_text = "If “Title 3” has long text of the heading be here"
@@ -23,6 +26,29 @@ def generate_pdf_for_letter():
                                                     right_block_text=right_block_text)
     for head in heads:
         story.append(head)
+    grid_block = GridBlockV2()
+    heading = "To,"
+    grid_units = [
+        {
+            "text_lines":["""Smt. DEVULAPALLI PRASANNA KUMARI
+                            W/o DEVULAPALLI UMA SHANKAR
+                            FLAT NO 201, MARUTHI KALYAN APT,
+                            NALLAKUNTA, HYDERABAD-44"""],
+            "unit_width": 245.5
+        },
+        {
+            "text_lines":["""Application No / Permit No:<br/>Permit No.<br/>Date"""],
+            "unit_width": 108.75
+        },
+        {
+            "text_lines":["""128907/GHMC/0128/2024<br/> <br/>128907/GHMC/0128/2024<br/>13-11-2024"""],
+            "unit_width": 146.75
+        }
+    ]
+    grid_values = grid_block.create_grid_flowables(heading=heading, grid_units=grid_units)
+    for value in grid_values:
+        story.append(value)
+
     heading = "Sir/Madam"
     lines = ["""Sub: Greater Hyderabad Municipal Corporation - Construction of Individual<br/>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Residential Building consisting of Ground Floor to an extent of 267.56<br/>
@@ -30,8 +56,8 @@ def generate_pdf_for_letter():
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Amberpet(V), Musheerabad Circle 15, Secunderabad Zone,
                             Amberpet(M),<br/> 
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GHMC, Hyderabad(Dist) - Building Permission-Instant Approval
-                            issued - Reg""", """Ref: 1. Your Application dated: 13-11-2024""",
-             """&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. G.O.Ms.No.168, MA&UD, dt.07-04-2012 and its time to time amendments."""]
+                            issued - Reg<br/><br/>Ref: 1. Your Application dated: 13-11-2024<br/>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. G.O.Ms.No.168, MA&UD, dt.07-04-2012 and its time to time amendments."""]
 
     paragraphs = ParagraphBlockV2().create_flowables(heading=heading, lines=lines)
     for paragraph in paragraphs:
@@ -57,4 +83,40 @@ def generate_pdf_for_letter():
                                                                         rows=rows)
     for value in table_values:
         story.append(value)
+
+    grid_units = [
+        {
+            "text_lines": ["NOTE: This is computer generated letter, doesn’t require any manual signatures"],
+            "unit_width": letter[0]-96,
+            "alignment":  "CENTER"
+        }
+    ]
+    grid_values = grid_block.create_grid_flowables(grid_units=grid_units)
+    for value in grid_values:
+        story.append(value)
+    list_block = ListBlockV2()
+    list_values = list_block.create_list_flowables(
+                    heading="""The Building permission is sanctioned subject to following conditions
+                                The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
+                                G.O.Ms.No.168, MA&UD, dt:07.04.2012.
+                            """,
+                    lines=["""Post verification will be carried out as per the provisions of the GHMC TG-bPASS Act and
+                            action will be initiated if any violation or misrepresentation of the facts is found.
+                            """,
+                           """In case of false declaration, the applicant is personally held responsible as per the
+                              provisions of the GHMC TG-bPASS Act.
+                           """,
+                           """The applicant or owner is personally held responsible and accountable in case of false or
+                              incorrect Self-Declaration if any found and shall be liable for punishment as per the
+                              provisions of the GHMC TG-bPASS Act .
+                           """,
+                           """If the plot under reference is falling in any prohibited lands / Govt. lands / Municipal lands /
+                              layout open space, earmarked parks and playground as per Master plan / Water bodies, the
+                              Certificate of Registration will be revoked and structure there upon will be demolished as
+                              per the provisions of the GHMC TG-bPASS Act.
+                           """],
+                    presentation_type="ordered_list")
+    for value in list_values:
+        story.append(value)
+
     doc.build(story)

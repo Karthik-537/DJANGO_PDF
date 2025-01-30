@@ -27,7 +27,7 @@ class BlockStyle:
     font: str
     size: float
     color: Any
-    line_spacing: float = 1.2
+    line_spacing: float = 1.5
     space_after: float = 0.25
     alignment: str = TA_JUSTIFY
     left_indent: float = ParagraphBlockStyles.INDENT_LEVELS[0]
@@ -85,14 +85,13 @@ class ParagraphBlockV2:
                     spaceAfter=style.size * style.space_after,
                     alignment=style.alignment,
                     wordWrap=ParagraphBlockStyles.Header.WORD_WRAP,
-                    leftIndent=ParagraphBlockStyles.INDENT_LEVELS[0]
-                    if name == "body"
-                    else 0,
-                    firstLineIndent=ParagraphBlockStyles.Body.FIRST_LINE_INDENT
-                    if name == "body"
-                    else 0,
-                    allowWidows=0,
-                    allowOrphans=0,
+                    # if name == "body"
+                    # else 0,
+                    # firstLineIndent=ParagraphBlockStyles.Body.FIRST_LINE_INDENT
+                    # if name == "body"
+                    # else 0,
+                    # allowWidows=0,
+                    # allowOrphans=0,
                 )
             )
 

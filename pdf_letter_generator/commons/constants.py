@@ -33,6 +33,7 @@ from reportlab.lib.units import inch
 
 REGULAR_FONT = "Helvetica"
 BOLD_FONT = "Helvetica-Bold"
+MEDIUM_FONT = "Helvetica-Medium"
 
 
 class PresentationType(Enum):
@@ -75,12 +76,12 @@ class PDFMargins:
     BOTTOM = inch
     LEFT = 0.25 * inch
     RIGHT = 0.25 * inch
-    INDENT_SMALL = 0.25 * inch
+    INDENT_SMALL = 0.2 * inch
     INDENT_MEDIUM = 0.5 * inch
     INDENT_LARGE = 0.75 * inch
 
     # Block spacing
-    BLOCK_SPACING = 24
+    BLOCK_SPACING = 12
     HEADING_SPACING = 0.15 * inch
 
     # Header Block
@@ -123,33 +124,33 @@ class PDFTextStyles:
         """Header text style configuration."""
 
         FONT = BOLD_FONT
-        SIZE = 12
+        SIZE = 16
         COLOR = colors.HexColor("#101828")
-        SPACE_BEFORE = 10
-        SPACE_AFTER = 0
+        # SPACE_BEFORE = 10
+        # SPACE_AFTER = 0
 
     class SubHeader:
         """SubHeader text style configuration."""
 
         FONT = REGULAR_FONT
-        SIZE = 12
+        SIZE = 16
         COLOR = colors.HexColor("#101828")
-        SPACE_BEFORE = 7
-        SPACE_AFTER = 0
+        # SPACE_BEFORE = 7
+        # SPACE_AFTER = 0
 
     class SubSubHeader:
         """SubSubHeader text style configuration."""
 
         FONT = REGULAR_FONT
-        SIZE = 12
+        SIZE = 14
         COLOR = colors.HexColor("#101828")
-        SPACE_BEFORE = 5
-        SPACE_AFTER = 0
+        # SPACE_BEFORE = 5
+        # SPACE_AFTER = 0
 
     class RightBlock:
         """RightBlok text style configuration."""
 
-        FONT = REGULAR_FONT
+        FONT = BOLD_FONT
         SIZE = 16
         COLOR = colors.HexColor("#039855")
         SPACE_BEFORE = 7
@@ -219,7 +220,7 @@ class PDFLineSpacing:
     CONDENSED = 1.1
     VERTICAL_SPACING = 0.025  # Global vertical spacing
     COMPACT = 1.05
-    ONE_POINT_FIVE = 1.5
+    TEN = 10.0
     DOUBLE = 2.0
 
 
@@ -283,7 +284,6 @@ class ParagraphBlockStyles:
         )
         LINE_SPACING = 1.5
         SPACE_AFTER = 0.25
-        INDENT = PDFMargins.INDENT_SMALL
         FIRST_LINE_INDENT = 0
         WORD_WRAP = "CJK"
 
@@ -362,7 +362,7 @@ class ListBlockStyles:
         SIZE = 12
         COLOR = black
         ALIGNMENT = TA_LEFT
-        LINE_SPACING = 1.2
+        LINE_SPACING = 1.5
         SPACE_AFTER = 0.25
         INDENT = 0
         FIRST_LINE_INDENT = 0
@@ -372,10 +372,10 @@ class ListBlockStyles:
         """List item styling configuration."""
 
         FONT = REGULAR_FONT
-        SIZE = 10
+        SIZE = 12
         COLOR = black
         ALIGNMENT = TA_LEFT
-        LINE_SPACING = 2
+        LINE_SPACING = 1.5
         SPACE_AFTER = 0.15
         INDENT = PDFMargins.INDENT_SMALL
         BULLET_INDENT = 0.02 * inch
@@ -429,8 +429,8 @@ class GridBlockStyles:
         SIZE = 12
         COLOR = black
         ALIGNMENT = TA_LEFT
-        LINE_SPACING = 1.2
-        SPACE_AFTER = 0.25
+        LINE_SPACING = 1.5
+        SPACE_AFTER = 0
         INDENT = 0
         FIRST_LINE_INDENT = 0
         WORD_WRAP = "CJK"
@@ -438,18 +438,18 @@ class GridBlockStyles:
     class Body:
         """Body text styling configuration for grid blocks."""
 
-        FONT = BOLD_FONT
+        FONT = REGULAR_FONT
         SIZE = 12
         COLOR = colors.HexColor("#1D2939")
         ALIGNMENT = TA_LEFT
-        LINE_SPACING = 1
-        SPACE_AFTER = 0.25
+        LINE_SPACING = 1.5
+        SPACE_AFTER = 0
         INDENT = 0.25 * inch
         FIRST_LINE_INDENT = 0
         WORD_WRAP = "CJK"
 
     # Spacing configurations
-    DEFAULT_HEADING_SPACING = 0.1 * inch
+    DEFAULT_HEADING_SPACING = 4
     COMPACT_HEADING_SPACING = 0.1 * inch
     WIDE_HEADING_SPACING = 0.2 * inch
 

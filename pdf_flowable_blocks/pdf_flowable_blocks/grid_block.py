@@ -42,8 +42,8 @@ class BlockStyle:
     font: str
     size: float
     color: Any
-    line_spacing: float = 1.2
-    space_after: float = 0.25
+    line_spacing: float = 1.5
+    space_after: float = 0
     alignment: str = TA_LEFT
 
 
@@ -186,7 +186,7 @@ class GridBlockV2:
                 flowables.append(Spacer(1, heading_spacing))
 
             if grid_units:
-                self._validate_grid_units(grid_units)
+                # self._validate_grid_units(grid_units)
 
                 # Create grid cells
                 cells = self._create_grid_cells(grid_units)
@@ -205,12 +205,13 @@ class GridBlockV2:
                             ("LEFTPADDING", (0, 0), (-1, -1), 0),
                             ("RIGHTPADDING", (0, 0), (-1, -1), 0),
                             ("BOTTOMPADDING", (0, 0), (-1, -1), grid_spacing),
+                            # ("BACKGROUND", (0, 0), (-1, -1), "RED"),
                         ]
                     )
                 )
 
                 flowables.append(table)
-                flowables.append(Spacer(1, 0.4 * inch))
+            flowables.append(Spacer(1, 24))
 
             return flowables
 
