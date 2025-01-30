@@ -230,7 +230,7 @@ class HeaderBlockV2:
             table = Table(table_data, colWidths=col_widths, style=table_style)
 
             # Wrap table in KeepTogether to prevent page breaks within header
-            flowables = [KeepTogether(table), Spacer(1, 16)]
+            flowables = [KeepTogether(table), Spacer(1, 24)]
 
             return flowables
 

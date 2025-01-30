@@ -181,7 +181,7 @@ class ListBlockV2:
                     bulletDedent="auto",
                     bulletFontName=ListBlockStyles.ListItem.BULLET_FONT,
                     bulletFontSize=ListBlockStyles.ListItem.BULLET_SIZE,
-                    leftIndent=ListBlockStyles.ListItem.BULLET_INDENT,
+                    bulletIndent=ListBlockStyles.ListItem.BULLET_INDENT,
                     spaceBefore=0,
                     spaceAfter=item_spacing,
                 )

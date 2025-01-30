@@ -31,9 +31,9 @@ from reportlab.lib.colors import black
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.units import inch
 
-REGULAR_FONT = "Helvetica"
-BOLD_FONT = "Helvetica-Bold"
-MEDIUM_FONT = "Helvetica-Medium"
+REGULAR_FONT = "Inter-Regular"
+BOLD_FONT = "Inter-Bold"
+MEDIUM_FONT = "Inter-Medium"
 
 
 class PresentationType(Enum):
@@ -76,12 +76,12 @@ class PDFMargins:
     BOTTOM = inch
     LEFT = 0.25 * inch
     RIGHT = 0.25 * inch
-    INDENT_SMALL = 0.2 * inch
+    INDENT_SMALL = 0.15 * inch
     INDENT_MEDIUM = 0.5 * inch
     INDENT_LARGE = 0.75 * inch
 
     # Block spacing
-    BLOCK_SPACING = 12
+    BLOCK_SPACING = 24
     HEADING_SPACING = 0.15 * inch
 
     # Header Block
@@ -132,7 +132,7 @@ class PDFTextStyles:
     class SubHeader:
         """SubHeader text style configuration."""
 
-        FONT = REGULAR_FONT
+        FONT = MEDIUM_FONT
         SIZE = 16
         COLOR = colors.HexColor("#101828")
         # SPACE_BEFORE = 7
@@ -141,7 +141,7 @@ class PDFTextStyles:
     class SubSubHeader:
         """SubSubHeader text style configuration."""
 
-        FONT = REGULAR_FONT
+        FONT = MEDIUM_FONT
         SIZE = 14
         COLOR = colors.HexColor("#101828")
         # SPACE_BEFORE = 5
@@ -153,8 +153,8 @@ class PDFTextStyles:
         FONT = BOLD_FONT
         SIZE = 16
         COLOR = colors.HexColor("#039855")
-        SPACE_BEFORE = 7
-        SPACE_AFTER = 0
+        # SPACE_BEFORE = 7
+        # SPACE_AFTER = 0
 
     class TextBlockHeading:
         """Text block heading style configuration."""
@@ -265,7 +265,7 @@ class ParagraphBlockStyles:
 
         FONT = BOLD_FONT
         SIZE = 12
-        COLOR = colors.HexColor("#344054")
+        COLOR = colors.HexColor("#101828")
         ALIGNMENT = TA_LEFT
         LINE_SPACING = 1.2
         SPACE_AFTER = 0.25
@@ -360,7 +360,7 @@ class ListBlockStyles:
 
         FONT = BOLD_FONT
         SIZE = 12
-        COLOR = black
+        COLOR = colors.HexColor("#1D2939")
         ALIGNMENT = TA_LEFT
         LINE_SPACING = 1.5
         SPACE_AFTER = 0.25
@@ -373,7 +373,7 @@ class ListBlockStyles:
 
         FONT = REGULAR_FONT
         SIZE = 12
-        COLOR = black
+        COLOR = colors.HexColor("#1D2939")
         ALIGNMENT = TA_LEFT
         LINE_SPACING = 1.5
         SPACE_AFTER = 0.15
@@ -427,7 +427,7 @@ class GridBlockStyles:
 
         FONT = BOLD_FONT
         SIZE = 12
-        COLOR = black
+        COLOR = colors.HexColor("#101828")
         ALIGNMENT = TA_LEFT
         LINE_SPACING = 1.5
         SPACE_AFTER = 0

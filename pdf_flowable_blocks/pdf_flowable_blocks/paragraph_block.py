@@ -115,7 +115,6 @@ class ParagraphBlockV2:
         self,
         heading: Optional[str] = None,
         lines: Union[List[str], str] = None,
-        name_designation_datetime_text: Optional[str] = None,
         header_style: Optional[BlockStyle] = None,
         body_style: Optional[BlockStyle] = None,
         heading_spacing: float = ParagraphBlockStyles.DEFAULT_HEADING_SPACING,
@@ -138,12 +137,6 @@ class ParagraphBlockV2:
         """
         try:
             flowables = []
-            if name_designation_datetime_text:
-                name_designation_datetime_para = self._create_paragraph(name_designation_datetime_text,\
-                                                                        "header")
-                flowables.append(name_designation_datetime_para)
-
-                return flowables
 
             # Add header if present
             if heading:
@@ -167,7 +160,6 @@ class ParagraphBlockV2:
                 else:
                     body_para = self._create_paragraph(str(lines), style_name)
                     flowables.append(body_para)
-                flowables.append(Spacer(1, paragraph_spacing))
 
             return flowables
 

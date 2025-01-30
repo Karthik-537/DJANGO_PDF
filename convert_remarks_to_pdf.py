@@ -7,7 +7,7 @@ from io import BytesIO
 # from sales_crm_core.adapters.iam_service import IamService
 # from sales_crm_core.adapters.service_adapter import get_service_adapter
 from convert_html_to_pdf import HTMLToPDFConverter
-from pdf_flowable_blocks.pdf_flowable_blocks.extra_feature_paragraph_block import ExtraFeatureParagraph
+from pdf_flowable_blocks.pdf_flowable_blocks.remarks_block import ExtraFeatureParagraph
 from pdf_flowable_blocks.pdf_flowable_blocks.header_block import HeaderBlockV2
 from reportlab.platypus import SimpleDocTemplate, Spacer
 from reportlab.lib.pagesizes import letter

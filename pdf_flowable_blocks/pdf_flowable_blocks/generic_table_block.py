@@ -255,7 +255,7 @@ class GenericTableBlockV2:
 
                 flowables.append(container_table)
 
-            flowables.append(Spacer(1, 0.2 * inch))
+            flowables.append(Spacer(1, 24))
             return flowables
 
         except Exception as e:

@@ -186,7 +186,7 @@ class GridBlockV2:
                 flowables.append(Spacer(1, heading_spacing))
 
             if grid_units:
-                # self._validate_grid_units(grid_units)
+                self._validate_grid_units(grid_units)
 
                 # Create grid cells
                 cells = self._create_grid_cells(grid_units)
@@ -204,8 +204,7 @@ class GridBlockV2:
                             ("VALIGN", (0, 0), (-1, -1), "TOP"),
                             ("LEFTPADDING", (0, 0), (-1, -1), 0),
                             ("RIGHTPADDING", (0, 0), (-1, -1), 0),
-                            ("BOTTOMPADDING", (0, 0), (-1, -1), grid_spacing),
-                            # ("BACKGROUND", (0, 0), (-1, -1), "RED"),
+                            ("BOTTOMPADDING", (0, 0), (-1, -1), grid_spacing)
                         ]
                     )
                 )
