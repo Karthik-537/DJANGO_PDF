@@ -15,7 +15,7 @@ class PDFConfig:
 
     # Page Settings
     PAGE_SIZE = letter
-    MARGIN = 0.69 * inch
+    MARGIN = 48
 
     # Expanded font configurations with more flexibility
     FONTS = {

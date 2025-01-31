@@ -117,13 +117,12 @@ class ListBlockV2:
         return stylesheet
 
     def _create_list_items(
-        self, lines: List[str], is_ordered: bool = False
+        self, lines: List[str]
     ) -> List[ListItem]:
         """Create a list of ListItem flowables from text lines.
 
         Args:
             lines: List of text strings to convert to list items
-            is_ordered: Whether this is an ordered list
 
         Returns:
             List[ListItem]: List of formatted list items
@@ -169,7 +168,7 @@ class ListBlockV2:
                 is_ordered = (
                     presentation_type == PresentationType.ORDERED_LIST.value
                 )
-                list_items = self._create_list_items(lines, is_ordered)
+                list_items = self._create_list_items(lines)
 
                 # Create list flowable (always use bullet type for consistent indentation)
                 list_flowable = ListFlowable(
@@ -189,7 +188,7 @@ class ListBlockV2:
                 # Wrap in KeepTogether to prevent awkward breaks
                 flowables.append(list_flowable)
                 # flowables.append(Spacer(1, item_spacing))
-            flowables.append(Spacer(1,24))
+            flowables.append(Spacer(1, 24))
 
             return flowables
 

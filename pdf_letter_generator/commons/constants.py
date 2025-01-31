@@ -31,7 +31,7 @@ from reportlab.lib.colors import black
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.units import inch
 
-REGULAR_FONT = "Inter-Regular"
+REGULAR_FONT = "Inter"
 BOLD_FONT = "Inter-Bold"
 MEDIUM_FONT = "Inter-Medium"
 
@@ -119,6 +119,9 @@ class PDFTextStyles:
     DEFAULT_ALIGNMENT = "LEFT"
     DEFAULT_COLOR = colors.black
     DEFAULT_PADDING = 3
+    LOGO_WIDTH_PERCENT = 0.15
+    CENTER_WIDTH_PERCENT = 0.68
+    RIGHT_WIDTH_PERCENT = 0.17
 
     class Header:
         """Header text style configuration."""
@@ -209,7 +212,7 @@ class PDFLineSpacing:
         CONDENSED (float): Tighter line spacing (1.1)
         VERTICAL_SPACING (float): Global vertical gap between lines
         COMPACT (float): Very compact line spacing (1.05)
-        ONE_POINT_FIVE (float): One-and-a-half line spacing
+        TEN (float): Ten line spacing
         DOUBLE (float): Double line spacing
 
     Example:

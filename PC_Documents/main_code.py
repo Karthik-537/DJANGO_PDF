@@ -18,7 +18,7 @@ italic_font_path = "pdf_letter_generator/fonts/Inter-4.1/extras/ttf/Inter-Italic
 bolditalic_font_path = "pdf_letter_generator/fonts/Inter-4.1/extras/ttf/Inter-BoldItalic.ttf"
 
 # Register fonts
-pdfmetrics.registerFont(TTFont("Inter-Regular", regular_font_path))
+pdfmetrics.registerFont(TTFont("Inter", regular_font_path))
 pdfmetrics.registerFont(TTFont("Inter-Medium", medium_font_path))
 pdfmetrics.registerFont(TTFont("Inter-Bold", bold_font_path))
 pdfmetrics.registerFont(TTFont("Inter-Italic", italic_font_path))
@@ -26,7 +26,7 @@ pdfmetrics.registerFont(TTFont("Inter-BoldItalic", bolditalic_font_path))
 
 pdfmetrics.registerFontFamily(
     "Inter",
-    normal="Inter-Regular",
+    normal="Inter",
     bold="Inter-Bold",
     italic="Inter-Italic",
     boldItalic="Inter-BoldItalic"
@@ -173,6 +173,19 @@ def generate_pdf_for_letter():
     for value in grid_values:
         story.append(value)
 
-    doc.build(story)
+    def add_watermark(canvas, doc):
 
-# generate_pdf_for_letter("pc_documents.pdf")
+        image_path = "https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png"
+
+        img_width = 400
+        img_height = 400
+
+        page_width, page_height = letter
+        x_position = (page_width - img_width) / 2
+        y_position = (page_height - img_height) / 2
+
+        canvas.setFillAlpha(0.2)
+
+        canvas.drawImage(image_path, x_position, y_position, width=img_width, height=img_height, mask='auto')
+
+    doc.build(story, onFirstPage=add_watermark, onLaterPages=add_watermark)

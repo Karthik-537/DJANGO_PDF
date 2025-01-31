@@ -27,7 +27,6 @@ from pdf_letter_generator.commons import (
     PDFTextStyles,
 )
 from pdf_letter_generator.commons.logo_handler import LogoHandler
-from reportlab.lib import colors
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -35,11 +34,6 @@ logger = logging.getLogger(__name__)
 
 class HeaderBlockV2:
     """Class to handle the creation and management of PDF header blocks using Platypus."""
-
-    # Width percentages for different sections
-    LOGO_WIDTH_PERCENT = 0.12
-    CENTER_WIDTH_PERCENT = 0.68
-    RIGHT_WIDTH_PERCENT = 0.20
 
     # Line spacing between headings
     HEADING_LINE_SPACING = PDFLineSpacing.TEN
@@ -186,9 +180,9 @@ class HeaderBlockV2:
                 2 * PDFConfig.MARGIN
             )
             col_widths = [
-                available_width * self.LOGO_WIDTH_PERCENT,
-                available_width * self.CENTER_WIDTH_PERCENT,
-                available_width * self.RIGHT_WIDTH_PERCENT,
+                available_width * PDFTextStyles.LOGO_WIDTH_PERCENT,
+                available_width * PDFTextStyles.CENTER_WIDTH_PERCENT,
+                available_width * PDFTextStyles.RIGHT_WIDTH_PERCENT,
             ]
 
             # Create table data
@@ -205,7 +199,7 @@ class HeaderBlockV2:
             # Create table with proper styling
             table_style = TableStyle(
                 [
-                    # ("ALIGN", (0, 0), (-1, -1), "LEFT"),
+                    ("ALIGN", (0, 0), (-1, -1), "LEFT"),
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
                     # (
                     #     "LEFTPADDING",
@@ -217,13 +211,10 @@ class HeaderBlockV2:
                         "RIGHTPADDING",
                         (0, 0),
                         (-1, -1),
-                        0,
+                        0
                     ),
                     ("TOPPADDING", (0, 0), (-1, -1), 0),
                     ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
-                    # ("BACKGROUND", (0,0), (0,0), "RED"),
-                    # ("BACKGROUND", (1,0), (1,0), "YELLOW"),
-                    # ("BACKGROUND", (2,0),(2,0),"BLUE"),
                 ]
             )
 
