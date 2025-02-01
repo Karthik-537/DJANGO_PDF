@@ -2,14 +2,14 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
-from reportlab.lib.styles import  ParagraphStyle
 from pdf_flowable_blocks.pdf_flowable_blocks.paragraph_block import ParagraphBlockV2
 from pdf_flowable_blocks.pdf_flowable_blocks.header_block import HeaderBlockV2
 from pdf_flowable_blocks.pdf_flowable_blocks.generic_table_block import GenericTableBlockV2
 from pdf_flowable_blocks.pdf_flowable_blocks.generic_table_block import CellConfig, RowConfig
-from reportlab.lib.enums import TA_CENTER
 from pdf_flowable_blocks.pdf_flowable_blocks.grid_block import GridBlockV2
 from pdf_flowable_blocks.pdf_flowable_blocks.list_block import ListBlockV2
+from pdf_flowable_blocks.pdf_flowable_blocks.qr_code_block import QRCodeBlock
+from pdf_flowable_blocks.pdf_flowable_blocks.image_block import ImageBlock, ImageDTO
 
 regular_font_path = "pdf_letter_generator/fonts/Inter-4.1/extras/ttf/Inter-Regular.ttf"
 medium_font_path = "pdf_letter_generator/fonts/Inter-4.1/extras/ttf/Inter-Medium.ttf"
@@ -32,6 +32,23 @@ pdfmetrics.registerFontFamily(
     boldItalic="Inter-BoldItalic"
 )
 
+
+def add_watermark(canvas, doc):
+    image_path = "https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png"
+
+    img_width = 400
+    img_height = 400
+
+    page_width, page_height = letter
+    x_position = (page_width - img_width) / 2
+    y_position = (page_height - img_height) / 2
+
+    canvas.saveState()
+
+    canvas.setFillAlpha(0.3)
+    canvas.drawImage(image_path, x_position, y_position, width=img_width, height=img_height, mask='auto')
+
+    canvas.restoreState()
 def generate_pdf_for_letter():
     doc = SimpleDocTemplate("pc_documents.pdf", pagesize=letter, leftMargin=48,
                             rightMargin=48, topMargin=50, bottomMargin=50)
@@ -162,6 +179,39 @@ def generate_pdf_for_letter():
     for value in list_values:
         story.append(value)
 
+    image_block = ImageBlock()
+    imagedtos = [
+        ImageDTO(url="https://st.depositphotos.com/2001755/3622/i/450/depositphotos_36220949-stock-photo-beautiful-landscape.jpg",
+                 description="""The Building permission is sanctioned subject to following conditions
+                               The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
+                               G.O.Ms.No.168, MA&UD, dt:07.04.2012."""),
+        ImageDTO(url="https://i.pinimg.com/236x/57/6d/9f/576d9f632da6447bc4dec80724cb38b3.jpg",
+                 description="""The Building permission is sanctioned subject to following conditions
+                               The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
+                               G.O.Ms.No.168, MA&UD, dt:07.04.2012. The Building permission is sanctioned subject to following conditions
+                               The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
+                               G.O.Ms.No.168, MA&UD, dt:07.04.2012."""),
+        ImageDTO(url="https://i.pinimg.com/236x/4f/b0/3a/4fb03afe4b71024e16dbe21ce50b9103.jpg",
+                 description="Image 3"),
+        ImageDTO(url="https://i.pinimg.com/236x/e1/b9/ad/e1b9ad195d0a8cae0c17c9e74846dd9b.jpg",
+                 description="""The Building permission is sanctioned subject to following conditions
+                               The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
+                               G.O.Ms.No.168, MA&UD, dt:07.04.2012.""")
+    ]
+    images_data = image_block.create_flowables(imagedtos=imagedtos)
+    for image in images_data:
+        story.append(image)
+
+    qr_code_url = "https://deepwork.keka.com/#/home/dashboard"
+    logo_url = "https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png"
+
+    qrcodeblock = QRCodeBlock()
+    qrcode_flowables = qrcodeblock.create_qr_code_flowables(qr_code_url=qr_code_url,
+        logo_url=logo_url)
+
+    for flowable in qrcode_flowables:
+        story.append(flowable)
+
     grid_units = [
         {
             "text_lines": ["""NOTE: This is a computer-generated letter and does not require any manual signatures."""],
@@ -172,20 +222,5 @@ def generate_pdf_for_letter():
     grid_values = grid_block.create_grid_flowables(grid_units=grid_units)
     for value in grid_values:
         story.append(value)
-
-    def add_watermark(canvas, doc):
-
-        image_path = "https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png"
-
-        img_width = 400
-        img_height = 400
-
-        page_width, page_height = letter
-        x_position = (page_width - img_width) / 2
-        y_position = (page_height - img_height) / 2
-
-        canvas.setFillAlpha(0.2)
-
-        canvas.drawImage(image_path, x_position, y_position, width=img_width, height=img_height, mask='auto')
 
     doc.build(story, onFirstPage=add_watermark, onLaterPages=add_watermark)
