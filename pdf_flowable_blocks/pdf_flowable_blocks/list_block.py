@@ -169,7 +169,6 @@ class ListBlockV2:
                     presentation_type == PresentationType.ORDERED_LIST.value
                 )
                 list_items = self._create_list_items(lines)
-
                 # Create list flowable (always use bullet type for consistent indentation)
                 list_flowable = ListFlowable(
                     list_items,

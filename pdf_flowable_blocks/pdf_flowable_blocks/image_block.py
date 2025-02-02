@@ -39,7 +39,8 @@ class MediaStyle:
 @dataclass
 class ImageDTO:
     url: str
-    description: str
+    header: Optional[str] = None
+    description: Optional[str] = None
 
 
 class ImageBlock:
@@ -58,6 +59,17 @@ class ImageBlock:
     def _create_stylesheet(self):
 
         stylesheet = StyleSheet1()
+
+        stylesheet.add(
+            ParagraphStyle(
+                name="header",
+                fontName=ImageBlockStyles.Header.font,
+                fontSize=ImageBlockStyles.Header.size,
+                textColor=ImageBlockStyles.Header.color,
+                alignment=ImageBlockStyles.Header.alignment,
+                leading=ImageBlockStyles.Header.size * ImageBlockStyles.Header.line_spacing
+            )
+        )
 
         stylesheet.add(
             ParagraphStyle(
@@ -165,7 +177,7 @@ class ImageBlock:
         """Create a row of images from URLs.
 
         Args:
-            urls: List of URLs for the row (max 2)
+            images: list of imagedtos
 
         Returns:
             List[Image]: List of ReportLab Image objects
@@ -174,11 +186,19 @@ class ImageBlock:
         for image in images[:2]:  # Limit to 2 images per row
             try:
                 image_data = []
+                if image.header:
+                    image_data.append(Paragraph(image.header, style=self.stylesheet["header"]))
+                else:
+                    image_data.append(Spacer(1,17))
+
                 img = self._create_image(image.url)
                 image_data.append(img)
                 image_data.append(Spacer(1, 5))
-                image_data.append(Paragraph(image.description, style=self.stylesheet["description"]))
-                image_data.append(Spacer(1, 5))
+
+                if image.description:
+                    image_data.append(Paragraph(image.description, style=self.stylesheet["description"]))
+                    image_data.append(Spacer(1, 5))
+
                 row_images.append(image_data)
             except Exception as e:
                 logger.error(f"Error creating image for row: {str(e)}")
@@ -195,7 +215,7 @@ class ImageBlock:
         """Create a list of flowables for the media block with 2-column layout.
 
         Args:
-            urls: List of URLs for images (S3 or HTTP)
+            imagedtos: List of imagedtos
 
         Returns:
             List[Flowable]: List of flowable objects ready for document
@@ -222,38 +242,7 @@ class ImageBlock:
                     TableStyle(
                         [
                             ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-                            ("VALIGN", (0, 0), (-1, -1), "TOP")
-                            # (
-                            #     "LEFTPADDING",
-                            #     (0, 0),
-                            #     (-1, -1),
-                            #     self.style.cell_padding,
-                            # ),
-                            # (
-                            #     "RIGHTPADDING",
-                            #     (0, 0),
-                            #     (-1, -1),
-                            #     self.style.cell_padding,
-                            # ),
-                            # (
-                            #     "TOPPADDING",
-                            #     (0, 0),
-                            #     (-1, -1),
-                            #     self.style.cell_padding,
-                            # ),
-                            # (
-                            #     "BOTTOMPADDING",
-                            #     (0, 0),
-                            #     (-1, -1),
-                            #     self.style.cell_padding,
-                            # ),
-                            # (
-                            #     "GRID",
-                            #     (0, 0),
-                            #     (-1, -1),
-                            #     self.style.border_width,
-                            #     self.style.border_color,
-                            # ),
+                            ("VALIGN", (0, 0), (-1, -1), "TOP"),
                         ]
                     )
                 )
@@ -270,7 +259,6 @@ class ImageBlock:
 
     def get_image_dimensions(self, url: str) -> Tuple[float, float]:
         """Get the dimensions of an image after applying style constraints.
-
         Args:
             url: Image URL (S3 or HTTP)
 

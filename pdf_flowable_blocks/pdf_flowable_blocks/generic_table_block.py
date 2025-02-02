@@ -153,13 +153,77 @@ class GenericTableBlockV2:
 
         return TableStyle(style_commands)
 
+    def _create_heading_flowables(self, heading: str) -> List:
+        paragraph_block = ParagraphBlockV2()
+        return paragraph_block.create_flowables(
+            heading=heading,
+            lines=None,
+            header_style=BlockStyle(
+                font=ParagraphBlockStyles.Header.FONT,
+                size=ParagraphBlockStyles.Header.SIZE,
+                color=ParagraphBlockStyles.Header.COLOR,
+                alignment=ParagraphBlockStyles.Header.ALIGNMENT,
+                line_spacing=ParagraphBlockStyles.Header.LINE_SPACING,
+                space_after=ParagraphBlockStyles.Header.SPACE_AFTER,
+            ),
+        )
+
+    def _process_row_cells(self, row: RowConfig, available_width: float):
+        row_data = []
+        row_widths = []
+        total_width = sum(cell.width for cell in row.cells)
+
+        for cell in row.cells:
+            row_data.append(self._format_cell_content(cell))
+            cell_width = (cell.width / total_width) * available_width
+            row_widths.append(cell_width)
+
+        return row_data, row_widths
+
+    def _generate_row_style(self, row: RowConfig, borders: bool) -> TableStyle:
+        row_style = self._create_row_style(borders)
+
+        if row.style:
+            if "background_color" in row.style:
+                row_style.add("BACKGROUND", (0, 0), (-1, 0), row.style["background_color"])
+            if "text_color" in row.style:
+                row_style.add("TEXTCOLOR", (0, 0), (-1, 0), row.style["text_color"])
+
+        col_idx = 0
+        for cell in row.cells:
+            if cell.background_color:
+                row_style.add("BACKGROUND", (col_idx, 0), (col_idx + cell.colspan - 1, 0), cell.background_color)
+            if cell.colspan > 1:
+                row_style.add("SPAN", (col_idx, 0), (col_idx + cell.colspan - 1, 0))
+            col_idx += cell.colspan
+
+        return row_style
+
+    def _create_row_table(self, row: RowConfig, available_width: float, borders: bool, cornerRadii: Optional[tuple] = None) -> Table:
+        row_data, row_widths = self._process_row_cells(row, available_width)
+        row_style = self._generate_row_style(row, borders)
+        return Table([row_data], colWidths=row_widths, rowHeights=[row.height], style=row_style,
+                     cornerRadii=cornerRadii)
+
+    def _wrap_in_container(self, row_table: Table, available_width: float) -> Table:
+        return Table(
+            [[row_table]],
+            colWidths=[available_width],
+            style=TableStyle([
+                ("TOPPADDING", (0, 0), (-1, -1), 0),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+                ("LEFTPADDING", (0, 0), (-1, -1), 0),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+            ]),
+        )
+
     def create_generic_table_flowables(
-        self,
-        rows: List[RowConfig],
-        borders: bool = True,
-        heading: Optional[str] = None,
-        repeat_header: bool = True,
-        split_rows: bool = True,
+            self,
+            rows: List[RowConfig],
+            borders: bool = True,
+            heading: Optional[str] = None,
+            repeat_header: bool = True,
+            split_rows: bool = True,
     ) -> List[Union[Table, Spacer]]:
         """Create table flowables from row configurations."""
         try:
@@ -167,91 +231,21 @@ class GenericTableBlockV2:
                 return []
 
             flowables = []
-            available_width = PDFConfig.get_page_width() - (
-                2 * PDFConfig.MARGIN
-            )
+            available_width = PDFConfig.get_page_width() - (2 * PDFConfig.MARGIN)
 
-            # Add heading using ParagraphBlockV2 if present
             if heading:
-                paragraph_block = ParagraphBlockV2()
-                heading_flowables = paragraph_block.create_flowables(
-                    heading=heading,
-                    lines=None,
-                    header_style=BlockStyle(
-                        font=ParagraphBlockStyles.Header.FONT,
-                        size=ParagraphBlockStyles.Header.SIZE,
-                        color=ParagraphBlockStyles.Header.COLOR,
-                        alignment=ParagraphBlockStyles.Header.ALIGNMENT,
-                        line_spacing=ParagraphBlockStyles.Header.LINE_SPACING,
-                        space_after=ParagraphBlockStyles.Header.SPACE_AFTER,
-                    ),
-                )
-                flowables.extend(heading_flowables)
+                flowables.extend(self._create_heading_flowables(heading))
 
-            # Process rows
-            for row in rows:
-                row_data = []
-                row_widths = []
-                total_width = sum(cell.width for cell in row.cells)
+            no_of_rows = len(rows)
+            for index, row in enumerate(rows):
+                corner_radii = None
+                if index == 0:
+                    corner_radii = (10, 10, 0, 0)
+                elif index == no_of_rows - 1:
+                    corner_radii = (0, 0, 10, 10)
 
-                for cell in row.cells:
-                    cell_content = self._format_cell_content(cell)
-                    row_data.append(cell_content)
-                    cell_width = (cell.width / total_width) * available_width
-                    row_widths.append(cell_width)
-
-                row_style = self._create_row_style(borders)
-
-                if row.style:
-                    if "background_color" in row.style:
-                        row_style.add(
-                            "BACKGROUND",
-                            (0, 0),
-                            (-1, 0),
-                            row.style["background_color"],
-                        )
-                    if "text_color" in row.style:
-                        row_style.add(
-                            "TEXTCOLOR",
-                            (0, 0),
-                            (-1, 0),
-                            row.style["text_color"],
-                        )
-
-                col_idx = 0
-                for cell in row.cells:
-                    if cell.background_color:
-                        row_style.add(
-                            "BACKGROUND",
-                            (col_idx, 0),
-                            (col_idx + cell.colspan - 1, 0),
-                            cell.background_color,
-                        )
-                    if cell.colspan > 1:
-                        row_style.add(
-                            "SPAN",
-                            (col_idx, 0),
-                            (col_idx + cell.colspan - 1, 0),
-                        )
-                    col_idx += cell.colspan
-
-                row_table = Table(
-                    [row_data], colWidths=row_widths, rowHeights=[row.height], style=row_style
-                )
-
-                container_table = Table(
-                    [[row_table]],
-                    colWidths=[available_width],
-                    style=TableStyle(
-                        [
-                            ("TOPPADDING", (0, 0), (-1, -1), 0),
-                            ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
-                            ("LEFTPADDING", (0, 0), (-1, -1), 0),
-                            ("RIGHTPADDING", (0, 0), (-1, -1), 0)
-                        ]
-                    )
-                )
-
+                row_table = self._create_row_table(row, available_width, borders, cornerRadii=corner_radii)
+                container_table = self._wrap_in_container(row_table, available_width)
                 flowables.append(container_table)
 
             flowables.append(Spacer(1, 24))
@@ -260,3 +254,4 @@ class GenericTableBlockV2:
         except Exception as e:
             logger.error(f"Error creating table flowables: {str(e)}")
             raise
+

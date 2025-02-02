@@ -65,12 +65,13 @@ class QRCodeBlock:
         return qr_img
 
     # Function to create PDF with QR code and logo
-    def create_qr_code_flowables(self,
-            qr_code_url:str,
-            logo_url:Optional[str]=None,
-            width:Optional[float]=QRCodeBlockStyles.DEFAULT_QRCODE_WIDTH,
-            height:Optional[float]=QRCodeBlockStyles.DEFAULT_QRCODE_HEIGHT
-    )->List[Flowable]:
+    def create_qr_code_flowables(
+            self,
+            qr_code_url: str,
+            logo_url: Optional[str] = None,
+            width: Optional[float] = QRCodeBlockStyles.DEFAULT_QRCODE_WIDTH,
+            height: Optional[float] = QRCodeBlockStyles.DEFAULT_QRCODE_HEIGHT
+    ) -> List[Flowable]:
         """
         Create a PDF with the QR code and logo.
 

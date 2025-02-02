@@ -110,7 +110,6 @@ def generate_pdf_for_letter():
 
     row1_cells = [CellConfig(value="1", width=10),CellConfig(value="Name", width=30),
                   CellConfig(value="Smt DEVULAPALLI PRASANNA KUMARI", width=60)]
-
     row2_cells = [CellConfig(value="2", width=10), CellConfig(value="Permit No.", width=30),
                   CellConfig(value="DEVULAPALLI UMA SHANKAR", width=60)]
     row3_cells = [CellConfig(value="3", width=10), CellConfig(value="Date", width=30),
@@ -181,19 +180,21 @@ def generate_pdf_for_letter():
 
     image_block = ImageBlock()
     imagedtos = [
-        ImageDTO(url="https://st.depositphotos.com/2001755/3622/i/450/depositphotos_36220949-stock-photo-beautiful-landscape.jpg",
+        ImageDTO(header="This is first image",
+                 url="https://st.depositphotos.com/2001755/3622/i/450/depositphotos_36220949-stock-photo-beautiful-landscape.jpg",
                  description="""The Building permission is sanctioned subject to following conditions
                                The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
                                G.O.Ms.No.168, MA&UD, dt:07.04.2012."""),
-        ImageDTO(url="https://i.pinimg.com/236x/57/6d/9f/576d9f632da6447bc4dec80724cb38b3.jpg",
+        ImageDTO(
+                 url="https://i.pinimg.com/236x/57/6d/9f/576d9f632da6447bc4dec80724cb38b3.jpg",
                  description="""The Building permission is sanctioned subject to following conditions
                                The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
-                               G.O.Ms.No.168, MA&UD, dt:07.04.2012. The Building permission is sanctioned subject to following conditions
-                               The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
                                G.O.Ms.No.168, MA&UD, dt:07.04.2012."""),
-        ImageDTO(url="https://i.pinimg.com/236x/4f/b0/3a/4fb03afe4b71024e16dbe21ce50b9103.jpg",
-                 description="Image 3"),
-        ImageDTO(url="https://i.pinimg.com/236x/e1/b9/ad/e1b9ad195d0a8cae0c17c9e74846dd9b.jpg",
+        ImageDTO(header="This is third image",
+                 url="https://i.pinimg.com/236x/4f/b0/3a/4fb03afe4b71024e16dbe21ce50b9103.jpg",
+                 ),
+        ImageDTO(header="This is fourth image",
+                 url="https://i.pinimg.com/236x/e1/b9/ad/e1b9ad195d0a8cae0c17c9e74846dd9b.jpg",
                  description="""The Building permission is sanctioned subject to following conditions
                                The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
                                G.O.Ms.No.168, MA&UD, dt:07.04.2012.""")
