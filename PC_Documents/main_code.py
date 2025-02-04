@@ -144,22 +144,25 @@ def generate_pdf_for_letter():
                                The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
                                G.O.Ms.No.168, MA&UD, dt:07.04.2012.
                             """,
-                    lines=["""Post verification will be carried out as per the provisions of the GHMC TG-bPASS Act and
+                    lines={
+                           """Post verification will be carried out as per the provisions of the GHMC TG-bPASS Act and
                               action will be initiated if any violation or misrepresentation of the facts is found.
-                           """,
+                           """:None,
                            """In case of false declaration, the applicant is personally held responsible as per the
                               provisions of the GHMC TG-bPASS Act.
-                           """,
+                           """:None,
                            """The applicant or owner is personally held responsible and accountable in case of false or
                               incorrect Self-Declaration if any found and shall be liable for punishment as per the
                               provisions of the GHMC TG-bPASS Act.
-                           """,
+                           """:None,
                            """If the plot under reference is falling in any prohibited lands / Govt. lands / Municipal lands /
                               layout open space, earmarked parks and playground as per Master plan / Water bodies, the
                               Certificate of Registration will be revoked and structure there upon will be demolished as
                               per the provisions of the GHMC TG-bPASS Act.
-                           """],
-                    presentation_type="ordered_list")
+                           """:None,
+                           "presentation_type":"ordered_list",
+                          }
+    )
     for value in list_values:
         story.append(value)
 
@@ -168,18 +171,21 @@ def generate_pdf_for_letter():
                    The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii)
                    (xi)&(xiv) of G.O.Ms.No.168, MA&UD, dt:07.04.2012.
                 """,
-        lines=["""Post verification will be carried out as per the provisions of the GHMC TG-bPASS Act and
-                  action will be initiated if any violation or misrepresentation of the facts is found.
-               """,
-               """In case of false declaration, the applicant is personally held responsible as per the
-                  provisions of the GHMC TG-bPASS Act.
-               """],
-        presentation_type="unordered_list")
+        lines={
+            """Post verification will be carried out as per the provisions of the GHMC TG-bPASS Act and
+               action will be initiated if any violation or misrepresentation of the facts is found.
+            """: None,
+            """In case of false declaration, the applicant is personally held responsible as per the
+               provisions of the GHMC TG-bPASS Act.
+            """: None,
+            "presentation_type": "unordered_list",
+        }
+    )
     for value in list_values:
         story.append(value)
 
     image_block = ImageBlock()
-    imagedtos = [
+    image_dtos = [
         ImageDTO(header="This is first image",
                  url="https://st.depositphotos.com/2001755/3622/i/450/depositphotos_36220949-stock-photo-beautiful-landscape.jpg",
                  description="""The Building permission is sanctioned subject to following conditions
@@ -199,7 +205,7 @@ def generate_pdf_for_letter():
                                The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
                                G.O.Ms.No.168, MA&UD, dt:07.04.2012.""")
     ]
-    images_data = image_block.create_flowables(imagedtos=imagedtos)
+    images_data = image_block.create_flowables(image_dtos=image_dtos)
     for image in images_data:
         story.append(image)
 
@@ -212,6 +218,45 @@ def generate_pdf_for_letter():
 
     for flowable in qrcode_flowables:
         story.append(flowable)
+
+    list_block = ListBlockV2()
+    list_values = list_block.create_list_flowables(
+        heading="""The Building permission is sanctioned subject to following conditions
+                                   The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of
+                                   G.O.Ms.No.168, MA&UD, dt:07.04.2012.
+                                """,
+        lines={
+            "Project Planning": {
+                "Define project scope": {
+                    "A": None,
+                    "B": None,
+                    "C": None,
+                    "presentation_type": "unordered_list"
+                },
+                "Set timeline": None,
+                "Allocate resources": None,
+                "presentation_type": "ordered_list"
+            },
+            "Implementation Phase": {
+                "Development": {
+                    "C": {
+                        "D": {
+                            "E": None,
+                            "F": None
+                        },
+                        "presentation_type": "ordered_list"
+                    }
+                },
+                "Testing": None,
+                "Deployment": None,
+                "presentation_type": "ordered_list"
+            },
+            "presentation_type": "unordered_list"
+
+        })
+
+    for value in list_values:
+        story.append(value)
 
     grid_units = [
         {

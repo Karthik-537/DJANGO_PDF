@@ -388,7 +388,7 @@ class ListBlockStyles:
         # Bullet configuration
         BULLET_CHAR = "•"
         BULLET_FONT = REGULAR_FONT
-        BULLET_SIZE = 10
+        BULLET_SIZE = 12
         BULLET_COLOR = black
 
         # Number configuration
@@ -398,13 +398,13 @@ class ListBlockStyles:
         NUMBER_COLOR = black
 
     # Spacing configurations
-    DEFAULT_HEADING_SPACING = 0.1 * inch
+    DEFAULT_HEADING_SPACING = 8
     COMPACT_HEADING_SPACING = 0.1 * inch
     WIDE_HEADING_SPACING = 0.2 * inch
 
     # List item spacing configurations
     LIST_ITEM_SPACING = {
-        "DEFAULT": 0.1 * inch,
+        "DEFAULT": 8,
         "COMPACT": 0.05 * inch,
         "WIDE": 0.15 * inch,
     }

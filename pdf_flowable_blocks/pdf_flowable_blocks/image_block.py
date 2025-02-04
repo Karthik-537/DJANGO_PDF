@@ -211,7 +211,7 @@ class ImageBlock:
 
         return row_images
 
-    def create_flowables(self, imagedtos: List[ImageDTO]) -> List[Flowable]:
+    def create_flowables(self, image_dtos: List[ImageDTO]) -> List[Flowable]:
         """Create a list of flowables for the media block with 2-column layout.
 
         Args:
@@ -227,8 +227,8 @@ class ImageBlock:
             flowables = []
 
             # Process URLs in pairs to create rows
-            for i in range(0, len(imagedtos), 2):
-                images = imagedtos[i: i + 2]
+            for i in range(0, len(image_dtos), 2):
+                images = image_dtos[i: i + 2]
                 row_images = self._create_image_row(images)
 
                 # Create table for the row with proper styling

@@ -7,7 +7,7 @@ This module provides functionality for rendering list-style text blocks
 
 import logging
 from dataclasses import dataclass
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, Dict
 
 from reportlab.lib.enums import TA_LEFT
 from reportlab.lib.styles import ListStyle, ParagraphStyle, StyleSheet1
@@ -74,17 +74,17 @@ class ListBlockV2:
                     fontSize=style.size,
                     textColor=style.color,
                     leading=style.size * style.line_spacing,
-                    spaceAfter=style.size * style.space_after,
                     alignment=style.alignment,
                     wordWrap=ListBlockStyles.Header.WORD_WRAP,
-                    leftIndent=ListBlockStyles.INDENT_LEVELS[0]
-                    if name == "list"
-                    else 0,
-                    firstLineIndent=ListBlockStyles.ListItem.FIRST_LINE_INDENT
-                    if name == "list"
-                    else 0,
-                    allowWidows=0,
-                    allowOrphans=0,
+                    # spaceAfter=style.size * style.space_after,
+                    # leftIndent=ListBlockStyles.INDENT_LEVELS[0]
+                    # if name == "list"
+                    # else 0,
+                    # firstLineIndent=ListBlockStyles.ListItem.FIRST_LINE_INDENT
+                    # if name == "list"
+                    # else 0,
+                    # allowWidows=0,
+                    # allowOrphans=0,
                 )
             )
 
@@ -94,10 +94,7 @@ class ListBlockV2:
                 "unordered",
                 bulletFontName=ListBlockStyles.ListItem.BULLET_FONT,
                 bulletFontSize=ListBlockStyles.ListItem.BULLET_SIZE,
-                leftIndent=ListBlockStyles.ListItem.BULLET_INDENT,
-                bulletDedent="auto",
-                spaceBefore=0,
-                spaceAfter=ListBlockStyles.LIST_ITEM_SPACING["DEFAULT"],
+                bulletColor=ListBlockStyles.ListItem.COLOR
             )
         )
 
@@ -106,87 +103,66 @@ class ListBlockV2:
                 "ordered",
                 bulletFontName=ListBlockStyles.ListItem.BULLET_FONT,
                 bulletFontSize=ListBlockStyles.ListItem.BULLET_SIZE,
-                leftIndent=ListBlockStyles.ListItem.BULLET_INDENT,
-                bulletDedent="auto",
-                bulletFormat="%s.",
-                spaceBefore=0,
-                spaceAfter=ListBlockStyles.LIST_ITEM_SPACING["DEFAULT"],
+                bulletColor=ListBlockStyles.ListItem.COLOR,
+                bulletFormat="%s."
             )
         )
 
         return stylesheet
 
-    def _create_list_items(
-        self, lines: List[str]
-    ) -> List[ListItem]:
-        """Create a list of ListItem flowables from text lines.
+    def _create_list_items(self, lines: Dict[str, Any], item_spacing:float) -> List[ListItem]:
+        """Returns a list of properly formatted ListItem objects"""
+        list_items = []
 
-        Args:
-            lines: List of text strings to convert to list items
+        for header, sublines in lines.items():
+            para = Paragraph(header, self.stylesheet["list"])
+            if isinstance(sublines, dict):
+                presentation_type = sublines.get("presentation_type", "unordered_list")
+                sublist_items = self._create_list_items(lines=sublines, item_spacing=item_spacing)
+                is_ordered = (
+                        presentation_type == PresentationType.ORDERED_LIST.value
+                )
+                sublist_flowable = ListFlowable(
+                    sublist_items,
+                    bulletType="1" if is_ordered else "bullet",
+                    style=self.stylesheet["ordered" if is_ordered else "unordered"]
+                )
+                list_items.append(ListItem([para, Spacer(1, item_spacing), sublist_flowable]))
+            elif header != "presentation_type":
+                list_items.append(ListItem([para, Spacer(1, item_spacing)]))
 
-        Returns:
-            List[ListItem]: List of formatted list items
-        """
-        items = []
-        for i, line in enumerate(lines, 1):
-            para = Paragraph(line, self.stylesheet["list"])
-            items.append(ListItem(para))
-        return items
+        return list_items
 
     def create_list_flowables(
-        self,
-        heading: Optional[str] = None,
-        lines: Optional[List[str]] = None,
-        presentation_type: PresentationType = PresentationType.UNORDERED_LIST.value,
-        heading_spacing: float = ListBlockStyles.DEFAULT_HEADING_SPACING,
-        item_spacing: float = ListBlockStyles.LIST_ITEM_SPACING["DEFAULT"],
+            self,
+            heading: Optional[str] = None,
+            lines: Optional[Dict[str, Any]] = None,
+            heading_spacing: float = ListBlockStyles.DEFAULT_HEADING_SPACING,
+            item_spacing: float = ListBlockStyles.LIST_ITEM_SPACING["DEFAULT"]
     ) -> List[Union[Paragraph, Spacer, ListFlowable]]:
-        """Create list block flowables.
-
-        Args:
-            heading: Optional heading text
-            lines: List of text lines for list items
-            presentation_type: Type of list (ordered_list or unordered_list)
-            heading_spacing: Space between heading and list
-            item_spacing: Space between list items
-
-        Returns:
-            List[Union[Paragraph, Spacer, ListFlowable]]: List of flowable objects
-        """
+        """Wraps the list items in a ListFlowable"""
         try:
             flowables = []
-            lines = [line for line in lines if line]
-
-            # Add header if present
             if heading:
                 header_para = Paragraph(heading, self.stylesheet["header"])
                 flowables.append(header_para)
                 flowables.append(Spacer(1, heading_spacing))
 
-            # Add list items if present
             if lines:
+                presentation_type = lines.get("presentation_type", "unordered")
+
+                list_items = self._create_list_items(lines=lines, item_spacing=item_spacing)  # Ensure proper list items
                 is_ordered = (
-                    presentation_type == PresentationType.ORDERED_LIST.value
+                        presentation_type == PresentationType.ORDERED_LIST.value
                 )
-                list_items = self._create_list_items(lines)
-                # Create list flowable (always use bullet type for consistent indentation)
+
                 list_flowable = ListFlowable(
                     list_items,
                     bulletType="1" if is_ordered else "bullet",
-                    style=self.stylesheet[
-                        "ordered" if is_ordered else "unordered"
-                    ],
-                    bulletDedent="auto",
-                    bulletFontName=ListBlockStyles.ListItem.BULLET_FONT,
-                    bulletFontSize=ListBlockStyles.ListItem.BULLET_SIZE,
-                    bulletIndent=ListBlockStyles.ListItem.BULLET_INDENT,
-                    spaceBefore=0,
-                    spaceAfter=item_spacing,
+                    style=self.stylesheet["ordered" if is_ordered else "unordered"]
                 )
-
-                # Wrap in KeepTogether to prevent awkward breaks
                 flowables.append(list_flowable)
-                # flowables.append(Spacer(1, item_spacing))
+
             flowables.append(Spacer(1, 24))
 
             return flowables
