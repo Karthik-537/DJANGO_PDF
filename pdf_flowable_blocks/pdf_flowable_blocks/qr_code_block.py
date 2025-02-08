@@ -6,6 +6,7 @@ from PIL import Image as PILImage
 from reportlab.platypus import Spacer, Image, Flowable
 from pdf_letter_generator.commons import QRCodeBlockStyles
 
+
 class QRCodeBlock:
 
     def _create_qr_code(self, url: str) -> PILImage.Image:
@@ -75,9 +76,6 @@ class QRCodeBlock:
         """
         Create a PDF with the QR code and logo.
 
-        Args:
-            pdf_filename (str): The output PDF file name.
-            qr_img (PIL.Image.Image): The QR code image with the logo.
         """
         flowables = []
         qr_img = self._create_qr_code(url=qr_code_url)
@@ -93,7 +91,6 @@ class QRCodeBlock:
             final_qr_buffer = BytesIO()
             qr_img.save(final_qr_buffer, format="PNG")  # Save as PNG format for reportlab compatibility
             final_qr_buffer.seek(0)
-
 
         final_qr_image = Image(final_qr_buffer, width=width, height=height)
         final_qr_image.hAlign = "LEFT"

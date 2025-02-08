@@ -1,21 +1,16 @@
 from reportlab.platypus import Spacer
 from pdf_flowable_blocks.pdf_flowable_blocks.paragraph_block import ParagraphBlockV2
 from pdf_letter_generator.commons.constants import GridBlockStyles
-from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
-from reportlab.lib.styles import ParagraphStyle, StyleSheet1
-from typing import Any, Dict, List, Optional
+from typing import Optional
 from reportlab.graphics.shapes import Drawing, Line
 from reportlab.lib.colors import Color
-from reportlab.platypus import Paragraph, Table, TableStyle
-from dataclasses import dataclass
-import logging
+from reportlab.platypus import Table, TableStyle
 from pdf_flowable_blocks.pdf_flowable_blocks.grid_block import GridBlockV2
-from pdf_letter_generator.pdf_blocks.pdf_config import PDFConfig
 
 
-def create_remarks_flowables(header_right_text:str, header_left_text:str, lines:Optional[list[str]]=None,
+def create_remarks_flowables(header_right_text: str, header_left_text: str, lines: Optional[list[str]] = None,
                              grid_spacing: float = GridBlockStyles.GRID_SPACING["DEFAULT"]
-                             ):
+                             ) -> List[Union[Table, Spacer, Line, Paragraph]]:
     grid_units = [
         {
             "text_lines": [header_right_text],
@@ -35,7 +30,7 @@ def create_remarks_flowables(header_right_text:str, header_left_text:str, lines:
 
     if grid_units:
 
-        cells =grid_block._create_grid_cells(grid_units)
+        cells = grid_block._create_grid_cells(grid_units)
 
         col_widths = [
             "{}%".format(unit["unit_width"]) for unit in grid_units
@@ -46,14 +41,14 @@ def create_remarks_flowables(header_right_text:str, header_left_text:str, lines:
             TableStyle(
                 [
                     ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("ALIGN", (0,0), (0,0), "LEFT"),
+                    ("ALIGN", (0, 0), (0, 0), "LEFT"),
                     ("LEFTPADDING", (0, 0), (-1, -1), 0),
                     ("RIGHTPADDING", (0, 0), (-1, -1), 0),
                     ("BOTTOMPADDING", (0, 0), (-1, -1), grid_spacing)
                 ]
             )
         )
-    flowables.append(table)
+        flowables.append(table)
 
     line = Drawing(500, 1)
     line_shape = Line(0, 0, 500, 0)

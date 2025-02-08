@@ -1,4 +1,4 @@
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
@@ -49,6 +49,8 @@ def add_watermark(canvas, doc):
     canvas.drawImage(image_path, x_position, y_position, width=img_width, height=img_height, mask='auto')
 
     canvas.restoreState()
+
+
 def generate_pdf_for_letter():
     doc = SimpleDocTemplate("pc_documents.pdf", pagesize=letter, leftMargin=48,
                             rightMargin=48, topMargin=50, bottomMargin=50)
@@ -59,9 +61,9 @@ def generate_pdf_for_letter():
     sub_sub_header_text = "<b>If “Title 3”</b> has long text of the heading be here"
     right_block_text = "BuildNow"
 
-    heads = HeaderBlockV2().create_header_flowables(logo_url=logo_url, header_text=header_text, \
+    heads = HeaderBlockV2().create_header_flowables(logo_url=logo_url, header_text=header_text,
                                                     sub_header_text=sub_header_text,
-                                                    sub_sub_header_text=sub_sub_header_text, \
+                                                    sub_sub_header_text=sub_sub_header_text,
                                                     right_block_text=right_block_text)
     for head in heads:
         story.append(head)
@@ -69,18 +71,18 @@ def generate_pdf_for_letter():
     heading = "To,"
     grid_units = [
         {
-            "text_lines":["""1. Smt. DEVULAPALLI PRASANNA KUMARI<br/>
+            "text_lines": ["""1. Smt. DEVULAPALLI PRASANNA KUMARI<br/>
                             &nbsp;&nbsp;&nbsp;W/o DEVULAPALLI UMA SHANKAR<br/>
                             &nbsp;&nbsp;&nbsp;FLAT NO 201, MARUTHI KALYAN APT,<br/>
                             &nbsp;&nbsp;&nbsp;NALLAKUNTA, HYDERABAD-44"""],
             "unit_width": 49.00
         },
         {
-            "text_lines":["""Application No/ Permit No:<br/>Permit No.<br/>Date"""],
+            "text_lines": ["""Application No/ Permit No:<br/>Permit No.<br/>Date"""],
             "unit_width": 20.70
         },
         {
-            "text_lines":["""128907/GHMC/0128/2024<br/><br/>128907/GHMC/0128/2024<br/>13-11-2024"""],
+            "text_lines": ["""128907/GHMC/0128/2024<br/><br/>128907/GHMC/0128/2024<br/>13-11-2024"""],
             "unit_width": 30.30
         }
     ]
@@ -102,19 +104,19 @@ def generate_pdf_for_letter():
     for paragraph in paragraphs:
         story.append(paragraph)
 
-    lines = ["""With reference to your application 1st cited, the Certificate of Registration for <br/>construction of
+    lines = ["""With reference to your application 1st cited, the Certificate of Registration for construction of
                 Individual Residential Building is hereby issued based."""]
     paragraphs = ParagraphBlockV2().create_flowables(lines=lines)
     for paragraph in paragraphs:
         story.append(paragraph)
 
-    row1_cells = [CellConfig(value="1", width=10),CellConfig(value="Name", width=30),
+    row1_cells = [CellConfig(value="1", width=10), CellConfig(value="Name", width=30),
                   CellConfig(value="Smt DEVULAPALLI PRASANNA KUMARI", width=60)]
     row2_cells = [CellConfig(value="2", width=10), CellConfig(value="Permit No.", width=30),
                   CellConfig(value="DEVULAPALLI UMA SHANKAR", width=60)]
     row3_cells = [CellConfig(value="3", width=10), CellConfig(value="Date", width=30),
-                 CellConfig(value="FLAT NO 201, MARUTHI KALYAN APT,<br/> NALLAKUNTA, HYDERABAD-44", width=60)]
-    rows = [RowConfig(cells=row1_cells,height=30),RowConfig(cells=row2_cells,height=30),
+                  CellConfig(value="FLAT NO 201, MARUTHI KALYAN APT,<br/> NALLAKUNTA, HYDERABAD-44", width=60)]
+    rows = [RowConfig(cells=row1_cells, height=30), RowConfig(cells=row2_cells, height=30),
             RowConfig(cells=row3_cells, height=36)]
     heading = "Section Heading Title"
     table_values = GenericTableBlockV2().create_generic_table_flowables(heading=heading,
@@ -147,22 +149,22 @@ def generate_pdf_for_letter():
                     lines={
                            """Post verification will be carried out as per the provisions of the GHMC TG-bPASS Act and
                               action will be initiated if any violation or misrepresentation of the facts is found.
-                           """:None,
+                           """: None,
                            """In case of false declaration, the applicant is personally held responsible as per the
                               provisions of the GHMC TG-bPASS Act.
-                           """:None,
+                           """: None,
                            """The applicant or owner is personally held responsible and accountable in case of false or
                               incorrect Self-Declaration if any found and shall be liable for punishment as per the
                               provisions of the GHMC TG-bPASS Act.
-                           """:None,
+                           """: None,
                            """If the plot under reference is falling in any prohibited lands / Govt. lands / Municipal lands /
                               layout open space, earmarked parks and playground as per Master plan / Water bodies, the
                               Certificate of Registration will be revoked and structure there upon will be demolished as
                               per the provisions of the GHMC TG-bPASS Act.
-                           """:None,
-                           "presentation_type":"ordered_list",
+                           """: None,
+                           "presentation_type": "ordered_list",
                           }
-    )
+                    )
     for value in list_values:
         story.append(value)
 
@@ -214,7 +216,7 @@ def generate_pdf_for_letter():
 
     qrcodeblock = QRCodeBlock()
     qrcode_flowables = qrcodeblock.create_qr_code_flowables(qr_code_url=qr_code_url,
-        logo_url=logo_url)
+                                                            logo_url=logo_url)
 
     for flowable in qrcode_flowables:
         story.append(flowable)
@@ -241,18 +243,27 @@ def generate_pdf_for_letter():
                 "Development": {
                     "C": {
                         "D": {
-                            "E": None,
+                            """With reference to your application 1st cited, the Certificate of Registration for construction of
+                    Individual Residential Building is hereby issued based.""": None,
                             "F": None
                         },
+                        "E": None,
                         "presentation_type": "ordered_list"
-                    }
+                    },
+                    "G": None,
+                    "presentation_type": "unordered_list"
                 },
                 "Testing": None,
                 "Deployment": None,
                 "presentation_type": "ordered_list"
             },
+            "Project Review": {
+                "Performance Analysis": None,
+                "Documentation": None,
+                "Feedback Collection": None,
+                "presentation_type": "ordered_list"
+            },
             "presentation_type": "unordered_list"
-
         })
 
     for value in list_values:

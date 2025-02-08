@@ -9,7 +9,7 @@ import logging
 import urllib.request
 from dataclasses import dataclass
 from io import BytesIO
-from typing import List, Optional, Tuple
+from typing import List, Optional, Tuple, Union
 from urllib.parse import urlparse
 
 import boto3
@@ -23,6 +23,7 @@ from pdf_letter_generator.commons import ImageBlockStyles
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class MediaStyle:
@@ -173,7 +174,7 @@ class ImageBlock:
             logger.error(f"Error creating image object: {str(e)}")
             raise
 
-    def _create_image_row(self, images: List[ImageDTO]) -> List[Image]:
+    def _create_image_row(self, images: List[ImageDTO]) -> List[List[Union[Paragraph, Spacer, Image]]]:
         """Create a row of images from URLs.
 
         Args:
@@ -189,7 +190,7 @@ class ImageBlock:
                 if image.header:
                     image_data.append(Paragraph(image.header, style=self.stylesheet["header"]))
                 else:
-                    image_data.append(Spacer(1,17))
+                    image_data.append(Spacer(1, 17))
 
                 img = self._create_image(image.url)
                 image_data.append(img)
@@ -215,7 +216,7 @@ class ImageBlock:
         """Create a list of flowables for the media block with 2-column layout.
 
         Args:
-            imagedtos: List of imagedtos
+            image_dtos: List of imagedtos
 
         Returns:
             List[Flowable]: List of flowable objects ready for document
@@ -267,7 +268,7 @@ class ImageBlock:
         """
         try:
             img = self._create_image(url)
-            return (img.drawWidth, img.drawHeight)
+            return img.drawWidth, img.drawHeight
         except Exception as e:
             logger.error(f"Error getting image dimensions: {str(e)}")
             raise

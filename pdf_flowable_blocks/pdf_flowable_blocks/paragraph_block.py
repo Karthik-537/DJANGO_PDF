@@ -115,8 +115,6 @@ class ParagraphBlockV2:
         self,
         heading: Optional[str] = None,
         lines: Union[List[str], str] = None,
-        header_style: Optional[BlockStyle] = None,
-        body_style: Optional[BlockStyle] = None,
         heading_spacing: float = ParagraphBlockStyles.DEFAULT_HEADING_SPACING,
         paragraph_spacing: float = ParagraphBlockStyles.PARAGRAPH_SPACING[
             "DEFAULT"
@@ -127,8 +125,6 @@ class ParagraphBlockV2:
         Args:
             heading: Optional heading text
             lines: Text content as string or list of strings
-            header_style: Optional custom style for header
-            body_style: Optional custom style for body text
             heading_spacing: Space between heading and body text
             paragraph_spacing: Space between paragraphs
 

@@ -12,13 +12,11 @@ from typing import Any, Dict, List, Optional, Union
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
-from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
 
 from pdf_letter_generator.pdf_blocks.pdf_config import PDFConfig
 from pdf_flowable_blocks.pdf_flowable_blocks.paragraph_block import ParagraphBlockV2
 from pdf_letter_generator.commons import (
-    ParagraphBlockStyles,
     PDFLineSpacing,
     PDFTextStyles,
 )
@@ -157,15 +155,7 @@ class GenericTableBlockV2:
         paragraph_block = ParagraphBlockV2()
         return paragraph_block.create_flowables(
             heading=heading,
-            lines=None,
-            header_style=BlockStyle(
-                font=ParagraphBlockStyles.Header.FONT,
-                size=ParagraphBlockStyles.Header.SIZE,
-                color=ParagraphBlockStyles.Header.COLOR,
-                alignment=ParagraphBlockStyles.Header.ALIGNMENT,
-                line_spacing=ParagraphBlockStyles.Header.LINE_SPACING,
-                space_after=ParagraphBlockStyles.Header.SPACE_AFTER,
-            ),
+            lines=None
         )
 
     def _process_row_cells(self, row: RowConfig, available_width: float):
@@ -199,11 +189,11 @@ class GenericTableBlockV2:
 
         return row_style
 
-    def _create_row_table(self, row: RowConfig, available_width: float, borders: bool, cornerRadii: Optional[tuple] = None) -> Table:
+    def _create_row_table(self, row: RowConfig, available_width: float, borders: bool, corner_radii: Optional[tuple] = None) -> Table:
         row_data, row_widths = self._process_row_cells(row, available_width)
         row_style = self._generate_row_style(row, borders)
         return Table([row_data], colWidths=row_widths, rowHeights=[row.height], style=row_style,
-                     cornerRadii=cornerRadii)
+                     cornerRadii=corner_radii)
 
     def _wrap_in_container(self, row_table: Table, available_width: float) -> Table:
         return Table(
@@ -221,9 +211,7 @@ class GenericTableBlockV2:
             self,
             rows: List[RowConfig],
             borders: bool = True,
-            heading: Optional[str] = None,
-            repeat_header: bool = True,
-            split_rows: bool = True,
+            heading: Optional[str] = None
     ) -> List[Union[Table, Spacer]]:
         """Create table flowables from row configurations."""
         try:
@@ -244,7 +232,8 @@ class GenericTableBlockV2:
                 elif index == no_of_rows - 1:
                     corner_radii = (0, 0, 10, 10)
 
-                row_table = self._create_row_table(row, available_width, borders, cornerRadii=corner_radii)
+                row_table = self._create_row_table(row=row, available_width=available_width,
+                                                   borders=borders, corner_radii=corner_radii)
                 container_table = self._wrap_in_container(row_table, available_width)
                 flowables.append(container_table)
 
@@ -254,4 +243,3 @@ class GenericTableBlockV2:
         except Exception as e:
             logger.error(f"Error creating table flowables: {str(e)}")
             raise
-

@@ -110,7 +110,7 @@ class ListBlockV2:
 
         return stylesheet
 
-    def _create_list_items(self, lines: Dict[str, Any], item_spacing:float) -> List[ListItem]:
+    def _create_list_items(self, lines: Dict[str, Any], item_spacing: float) -> List[ListItem]:
         """Returns a list of properly formatted ListItem objects"""
         list_items = []
 

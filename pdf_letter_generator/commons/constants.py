@@ -28,7 +28,7 @@ from enum import Enum
 
 from reportlab.lib import colors
 from reportlab.lib.colors import black
-from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
+from reportlab.lib.enums import TA_LEFT, TA_CENTER
 from reportlab.lib.units import inch
 
 REGULAR_FONT = "Inter"
@@ -466,10 +466,12 @@ class GridBlockStyles:
     # Indentation levels for nested content
     INDENT_LEVELS = [0.25 * inch, 0.5 * inch, 0.75 * inch]
 
+
 class QRCodeBlockStyles:
 
     DEFAULT_QRCODE_WIDTH = 150
     DEFAULT_QRCODE_HEIGHT = 150
+
 
 class ImageBlockStyles:
 

@@ -12,7 +12,6 @@ from typing import Any, Dict, List, Optional, Union
 
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 from reportlab.lib.styles import ParagraphStyle, StyleSheet1
-from reportlab.lib.units import inch
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle
 
 from pdf_letter_generator.commons.constants import GridBlockStyles
