@@ -1,5 +1,6 @@
 import sign_block
 from pathlib import Path
+from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.pdfbase import pdfmetrics
 
@@ -25,7 +26,7 @@ pdfmetrics.registerFontFamily(
 )
 
 # Read your local PDF file
-pdf_path = "example.pdf"  # Replace with your actual file path
+pdf_path = "pc_documents.pdf"  # Replace with your actual file path
 if Path(pdf_path).exists():
     with open(pdf_path, "rb") as pdf_file:
         input_pdf_bytes = pdf_file.read()  # Read PDF as bytes
@@ -34,17 +35,17 @@ if Path(pdf_path).exists():
     signature_lines = [
         """<b>John Doe</b>""",
         "<i>Software Engineer</i>",
-        "ABC Corporation"
+        "<i>ABC Corporation</i>"
     ]
 
     signature_img_link = "https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png"
 
-    description = "This document is digitally signed for authentication."
+    description = "<b>This document is digitally signed for authentication.</b>"
 
     # Set signature position
     x_position = 400  # X-coordinate on the page
-    y_position = 200  # Y-coordinate on the page
-    page_number = 1   # Apply signature on page 1
+    y_position = 410  # Y-coordinate on the page
+    page_number = 4   # Apply signature on page 1
 
     # Call function
     signed_pdf_bytes = sign_block.add_signature_to_pdf(
@@ -65,5 +66,3 @@ if Path(pdf_path).exists():
     print(f"Signed PDF saved as '{output_path}'")
 else:
     print("Error: The specified PDF file was not found.")
-
-

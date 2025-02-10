@@ -211,16 +211,6 @@ def generate_pdf_for_letter():
     for image in images_data:
         story.append(image)
 
-    qr_code_url = "https://deepwork.keka.com/#/home/dashboard"
-    logo_url = "https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png"
-
-    qrcodeblock = QRCodeBlock()
-    qrcode_flowables = qrcodeblock.create_qr_code_flowables(qr_code_url=qr_code_url,
-                                                            logo_url=logo_url)
-
-    for flowable in qrcode_flowables:
-        story.append(flowable)
-
     list_block = ListBlockV2()
     list_values = list_block.create_list_flowables(
         heading="""The Building permission is sanctioned subject to following conditions
@@ -229,30 +219,13 @@ def generate_pdf_for_letter():
                                 """,
         lines={
             "Project Planning": {
-                "Define project scope": {
-                    "A": None,
-                    "B": None,
-                    "C": None,
-                    "presentation_type": "unordered_list"
-                },
+                "Define project scope": None,
                 "Set timeline": None,
                 "Allocate resources": None,
                 "presentation_type": "ordered_list"
             },
             "Implementation Phase": {
-                "Development": {
-                    "C": {
-                        "D": {
-                            """With reference to your application 1st cited, the Certificate of Registration for construction of
-                    Individual Residential Building is hereby issued based.""": None,
-                            "F": None
-                        },
-                        "E": None,
-                        "presentation_type": "ordered_list"
-                    },
-                    "G": None,
-                    "presentation_type": "unordered_list"
-                },
+                "Development": None,
                 "Testing": None,
                 "Deployment": None,
                 "presentation_type": "ordered_list"
@@ -268,6 +241,16 @@ def generate_pdf_for_letter():
 
     for value in list_values:
         story.append(value)
+
+    qr_code_url = "https://deepwork.keka.com/#/home/dashboard"
+    logo_url = "https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png"
+
+    qrcodeblock = QRCodeBlock()
+    qrcode_flowables = qrcodeblock.create_qr_code_flowables(qr_code_url=qr_code_url,
+                                                            logo_url=logo_url)
+
+    for flowable in qrcode_flowables:
+        story.append(flowable)
 
     grid_units = [
         {

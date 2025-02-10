@@ -1,0 +1,81 @@
+import fitz  # PyMuPDF
+import requests
+from io import BytesIO
+import qrcode
+from PIL import Image as PILImage
+
+class QRCodeBlockCanvas:
+    def _create_qr_code(self, url: str) -> PILImage.Image:
+        """Generate a QR code for the provided URL."""
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=5,
+            border=0
+        )
+        qr.add_data(url)
+        qr.make(fit=True)
+        return qr.make_image(fill="black", back_color="white")
+
+    def _add_logo_to_qr(self, qr_img: PILImage.Image, logo_url: str) -> PILImage.Image:
+        """Overlay a logo at the center of the QR code."""
+        response = requests.get(logo_url)
+        logo = PILImage.open(BytesIO(response.content)).convert("RGBA")
+
+        qr_width, qr_height = qr_img.size
+        logo_size = min(qr_width, qr_height) // 4
+        logo = logo.resize((logo_size, logo_size))
+
+        qr_img = qr_img.convert("RGB")
+        logo_position = ((qr_width - logo.size[0]) // 2, (qr_height - logo.size[1]) // 2)
+        qr_img.paste(logo, logo_position, logo)
+
+        return qr_img
+
+    def add_qr_code_to_existing_pdf(self, input_pdf: str, output_pdf: str, qr_code_url: str,
+                                    page_number: int, x0: int, y0: int, x1: int, y1: int,
+                                    logo_url: str = None):
+        """Add a QR code to a specific page of an existing PDF."""
+        # Load the existing PDF
+        doc = fitz.open(input_pdf)
+
+        # Ensure the page number is within range
+        if page_number < 1 or page_number > len(doc):
+            raise ValueError(f"Invalid page number! PDF has {len(doc)} pages.")
+
+        # Get the specified page (page_number is 1-based, but PyMuPDF uses 0-based index)
+        page = doc[page_number - 1]
+
+        # Create the QR code
+        qr_img = self._create_qr_code(qr_code_url)
+        if logo_url:
+            qr_img = self._add_logo_to_qr(qr_img, logo_url)
+
+        # Convert QR code image to bytes
+        qr_buffer = BytesIO()
+        qr_img.save(qr_buffer, format="PNG")
+        qr_buffer.seek(0)
+
+        # Insert the QR code image at the specified location on the page
+        img_rect = fitz.Rect(x0, y0, x1, y1)  # (x0, y0, x1, y1)
+        page.insert_image(img_rect, stream=qr_buffer.read())
+
+        # Save the modified PDF
+        doc.save(output_pdf)
+        doc.close()
+
+        print(f"QR Code added to page {page_number} successfully! Saved as: {output_pdf}")
+
+# Example Usage
+qr_block = QRCodeBlockCanvas()
+qr_block.add_qr_code_to_existing_pdf(
+    input_pdf="modified.pdf",
+    output_pdf="final.pdf",
+    qr_code_url="https://www.amazon.in/?&tag=googhydrabk1-21&ref=pd_sl_5szpgfto9i_e&adgrpid=155259813593&hvpone=&hvptwo=&hvadid=674893540034&hvpos=&hvnetw=g&hvrand=7141621320752816559&hvqmt=e&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9062140&hvtargid=kwd-64107830&hydadcr=14452_2316413&gad_source=1",
+    page_number=4,
+    logo_url="https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png",
+    x0=54,
+    y0=374,
+    x1=204,
+    y1=524
+)

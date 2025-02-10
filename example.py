@@ -12,7 +12,7 @@ Spacing = Spacer(1, 5)
 # List of flowables (dynamic elements)
 elements = [
     # Assign initial value to i
-    DocAssign("i", 10),
+    DocAssign("i", 100),
 
     # Loop while i > 0
     DocWhile("i", [
@@ -20,9 +20,9 @@ elements = [
         DocPara("i", format="The value of i is %(__expr__)d", style=normal), Spacing,
 
         # Conditional check using DocIf
-        DocIf("i > 3",
-              Paragraph("The value of i is larger than 3", normal),
-              Paragraph("The value of i is not larger than 3", normal)), Spacing,
+        DocIf("i > 50",
+              Paragraph("The value of i is larger than 50", normal),
+              Paragraph("The value of i is not larger than 50", normal)), Spacing,
 
         # Decrement i
         DocExec("i -= 1"),

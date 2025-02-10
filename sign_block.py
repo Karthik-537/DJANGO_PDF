@@ -1,4 +1,3 @@
-import textwrap
 from io import BytesIO
 from typing import List, Optional
 
@@ -61,7 +60,9 @@ def add_signature_to_pdf(
 
     # Add "Yours Faithfully" text before the tick
     c.setFont(REGULAR_FONT, ParagraphBlockStyles.Body.SIZE)
-    c.drawString(x, curr_y+60, "Yours Faithfully")  # Position above the tick
+    c.drawString(x, curr_y, "Yours Faithfully")  # Position above the tick
+
+    curr_y -= 60
 
     # sign_icon_path = "plugins/pdf_letter_generator/images/sign_tick.png"
     # Add the signature image
