@@ -47,6 +47,9 @@ class HTMLToPDFConverter:
                 parent=self.styles["Normal"],
                 alignment=TA_JUSTIFY,
             ),
+            "remarks": ParagraphStyle(
+                name="remarks", fontName="Helvetica", fontSize=12, leading=15
+            )
         }
 
     def clean_text(self, text):
@@ -130,7 +133,7 @@ class HTMLToPDFConverter:
         if isinstance(tag, NavigableString):
             text = self.clean_text(str(tag))
             if text:
-                self.story.append(Paragraph(text, self.styles["Normal"]))
+                self.story.append(Paragraph(text, style=self.custom_styles["remarks"]))
             return
 
         if tag.name is None:
@@ -187,7 +190,7 @@ class HTMLToPDFConverter:
             self.story.append(Paragraph(text, style))
             self.story.append(Spacer(1, 12))
 
-    def convert(self, html_content):
+    def convert_html_content_to_stories(self, html_content):
         """Convert HTML content to PDF."""
         # Parse HTML content
         soup = BeautifulSoup(html_content, "html.parser")

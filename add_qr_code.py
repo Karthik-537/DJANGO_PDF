@@ -3,6 +3,8 @@ import requests
 from io import BytesIO
 import qrcode
 from PIL import Image as PILImage
+from pathlib import Path
+
 
 class QRCodeBlockCanvas:
     def _create_qr_code(self, url: str) -> PILImage.Image:
@@ -32,12 +34,12 @@ class QRCodeBlockCanvas:
 
         return qr_img
 
-    def add_qr_code_to_existing_pdf(self, input_pdf: str, output_pdf: str, qr_code_url: str,
+    def add_qr_code_to_existing_pdf(self, input_pdf_bytes: bytes, qr_code_url: str,
                                     page_number: int, x0: int, y0: int, x1: int, y1: int,
-                                    logo_url: str = None):
-        """Add a QR code to a specific page of an existing PDF."""
-        # Load the existing PDF
-        doc = fitz.open(input_pdf)
+                                    logo_url: str = None) -> bytes:
+        """Add a QR code to a specific page of an existing PDF and return the modified PDF as bytes."""
+        # Load the existing PDF from bytes
+        doc = fitz.open(stream=input_pdf_bytes, filetype="pdf")
 
         # Ensure the page number is within range
         if page_number < 1 or page_number > len(doc):
@@ -60,22 +62,32 @@ class QRCodeBlockCanvas:
         img_rect = fitz.Rect(x0, y0, x1, y1)  # (x0, y0, x1, y1)
         page.insert_image(img_rect, stream=qr_buffer.read())
 
-        # Save the modified PDF
-        doc.save(output_pdf)
+        # Save the modified PDF to bytes
+        output_pdf_bytes = BytesIO()
+        doc.save(output_pdf_bytes)
         doc.close()
 
-        print(f"QR Code added to page {page_number} successfully! Saved as: {output_pdf}")
+        return output_pdf_bytes.getvalue()
+
 
 # Example Usage
-qr_block = QRCodeBlockCanvas()
-qr_block.add_qr_code_to_existing_pdf(
-    input_pdf="modified.pdf",
-    output_pdf="final.pdf",
-    qr_code_url="https://www.amazon.in/?&tag=googhydrabk1-21&ref=pd_sl_5szpgfto9i_e&adgrpid=155259813593&hvpone=&hvptwo=&hvadid=674893540034&hvpos=&hvnetw=g&hvrand=7141621320752816559&hvqmt=e&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9062140&hvtargid=kwd-64107830&hydadcr=14452_2316413&gad_source=1",
-    page_number=4,
-    logo_url="https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png",
-    x0=54,
-    y0=374,
-    x1=204,
-    y1=524
-)
+pdf_path = "modified.pdf"
+if Path(pdf_path).exists():
+    with open(pdf_path, "rb") as pdf_file:
+        input_pdf_bytes = pdf_file.read()
+
+    qr_block = QRCodeBlockCanvas()
+    modified_pdf_bytes = qr_block.add_qr_code_to_existing_pdf(
+        input_pdf_bytes=input_pdf_bytes,
+        qr_code_url="https://www.amazon.in/?&tag=googhydrabk1-21&ref=pd_sl_5szpgfto9i_e&adgrpid=155259813593&hvpone=&hvptwo=&hvadid=674893540034&hvpos=&hvnetw=g&hvrand=7141621320752816559&hvqmt=e&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9062140&hvtargid=kwd-64107830&hydadcr=14452_2316413&gad_source=1",
+        page_number=4,
+        logo_url="https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png",
+        x0=54,
+        y0=374,
+        x1=204,
+        y1=524
+    )
+
+    # Save the modified PDF for verification
+    with open("final.pdf", "wb") as output_file:
+        output_file.write(modified_pdf_bytes)

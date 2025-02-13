@@ -31,9 +31,8 @@ from reportlab.lib.colors import black
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
 from reportlab.lib.units import inch
 
-REGULAR_FONT = "Inter"
-BOLD_FONT = "Inter-Bold"
-MEDIUM_FONT = "Inter-Medium"
+REGULAR_FONT = "Helvetica"
+BOLD_FONT = "Helvetica-Bold"
 
 
 class PresentationType(Enum):
@@ -135,7 +134,7 @@ class PDFTextStyles:
     class SubHeader:
         """SubHeader text style configuration."""
 
-        FONT = MEDIUM_FONT
+        FONT = BOLD_FONT
         SIZE = 16
         COLOR = colors.HexColor("#101828")
         # SPACE_BEFORE = 7
@@ -144,7 +143,7 @@ class PDFTextStyles:
     class SubSubHeader:
         """SubSubHeader text style configuration."""
 
-        FONT = MEDIUM_FONT
+        FONT = BOLD_FONT
         SIZE = 14
         COLOR = colors.HexColor("#101828")
         # SPACE_BEFORE = 5
@@ -490,6 +489,78 @@ class ImageBlockStyles:
         line_spacing = 1.5
 
 
+
+class RemarkBlockStyles:
+    class Body:
+        """Body text styling configuration for grid blocks."""
+
+        FONT = REGULAR_FONT
+        SIZE = 13
+        COLOR = black
+        ALIGNMENT = TA_LEFT
+        LINE_SPACING = 0.5
+        SPACE_AFTER = 0.25
+        INDENT = 0.25 * inch
+        FIRST_LINE_INDENT = 0
+        WORD_WRAP = "CJK"
+
+    # Spacing configurations
+    DEFAULT_HEADING_SPACING = 0.1 * inch
+    COMPACT_HEADING_SPACING = 0.1 * inch
+    WIDE_HEADING_SPACING = 0.2 * inch
+
+    # Grid spacing configurations
+    GRID_SPACING = {
+        "DEFAULT": 0.1 * inch,
+        "COMPACT": 0.05 * inch,
+        "WIDE": 0.15 * inch,
+    }
+
+    # Indentation levels for nested content
+    INDENT_LEVELS = [0.25 * inch, 0.5 * inch, 0.75 * inch]
+
+class RemarksHeaderBlockStyles:
+
+    class Header:
+        """Header text style configuration."""
+
+        FONT = BOLD_FONT
+        SIZE = 12
+        COLOR = colors.HexColor("#101828")
+        # SPACE_BEFORE = 10
+        # SPACE_AFTER = 0
+
+    class SubHeader:
+        """SubHeader text style configuration."""
+
+        FONT = BOLD_FONT
+        SIZE = 12
+        COLOR = colors.HexColor("#101828")
+        # SPACE_BEFORE = 7
+        # SPACE_AFTER = 0
+
+    class SubSubHeader:
+        """SubSubHeader text style configuration."""
+
+        FONT = BOLD_FONT
+        SIZE = 12
+        COLOR = colors.HexColor("#101828")
+        # SPACE_BEFORE = 5
+        # SPACE_AFTER = 0
+
+    class RightBlock:
+        """RightBlok text style configuration."""
+
+        FONT = BOLD_FONT
+        SIZE = 16
+        COLOR = colors.HexColor("#039855")
+        # SPACE_BEFORE = 7
+        # SPACE_AFTER = 0
+
+
+
+
+
 # from reportlab.pdfbase import pdfmetrics
 # from reportlab.pdfbase.ttfonts import TTFont
 #
@@ -513,5 +584,7 @@ __all__ = [
     "ListBlockStyles",
     "GridBlockStyles",
     "QRCodeBlockStyles",
-    "ImageBlockStyles"
+    "ImageBlockStyles",
+    "RemarkBlockStyles",
+    "RemarksHeaderBlockStyles"
 ]
