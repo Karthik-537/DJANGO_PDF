@@ -1,7 +1,8 @@
 from pypdf import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
 from reportlab.lib.utils import ImageReader
-import qrcode
+from qrcode.main import QRCode
+from qrcode.constants import ERROR_CORRECT_L
 from PIL import Image as PILImage
 import requests
 import io
@@ -49,9 +50,9 @@ class QRCodeBlockCanvas:
 
     @staticmethod
     def _create_qr_code(url: str) -> PILImage.Image:
-        qr = qrcode.QRCode(
+        qr = QRCode(
             version=1,
-            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            error_correction=ERROR_CORRECT_L,
             box_size=10,
             border=0
         )
@@ -85,7 +86,7 @@ class QRCodeBlockCanvas:
     ) -> io.BytesIO:
         buffer = io.BytesIO()
         c = canvas.Canvas(buffer, pagesize=(page_width, page_height))
-        y = page_height - (y+width)
+        y = page_height - (y + width)
         qr_img_reader = ImageReader(qr_img)
         c.drawImage(qr_img_reader, x, y, width=width, height=width)
         c.save()
@@ -106,7 +107,7 @@ modified_pdf_bytes = qr_block.add_qr_code_to_existing_pdf(
     logo_url="https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png",
     x=400,
     y=100,
-    width=150
+    width=100
 )
 
 with open("canvas.pdf", "wb") as output_file:

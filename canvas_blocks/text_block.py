@@ -7,7 +7,7 @@ from reportlab.lib.pagesizes import letter
 
 class TextBlockCanvas:
 
-    TEXT_FONT_SIZE = 12
+    DEFAULT_TEXT_FONT_SIZE = 12
     FONT = "Helvetica"
 
     def add_text_to_existing_pdf(
@@ -16,7 +16,7 @@ class TextBlockCanvas:
             y: float,
             text: str,
             page_number: int,
-            font_size: Optional[int] = TEXT_FONT_SIZE
+            font_size: Optional[int] = DEFAULT_TEXT_FONT_SIZE
     ) -> bytes:
         reader = PdfReader(io.BytesIO(input_pdf_bytes))
         writer = PdfWriter()
@@ -54,11 +54,12 @@ class TextBlockCanvas:
         packet = io.BytesIO()
         c = canvas.Canvas(packet, pagesize=(page_width, page_height))
 
-        y = page_height-y
+        y = page_height - y
         words = text.split(' ')
         current_line = ''
         line_height = 14
-        max_width = page_width-x-48
+        max_width = page_width - x - 48
+        c.setFont(self.FONT, font_size)
         for word in words:
             test_line = current_line + ' ' + word if current_line else word
             test_width = c.stringWidth(test_line, self.FONT, font_size)
@@ -83,13 +84,15 @@ with open(pdf_path, "rb") as pdf_file:
 text_block = TextBlockCanvas()
 modified_pdf_bytes = text_block.add_text_to_existing_pdf(
     input_pdf_bytes=pdf_bytes,
-    x=100,
-    y=100,
-    text="The Building permission is sanctioned subject to following conditions. The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) of G.O.Ms.No.168, MA&UD, dt:07.04.2012.",
+    x=450,
+    y=150,
+    text="The Building permission is sanctioned subject to following conditions."
+         " The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) "
+         "of G.O.Ms.No.168, MA&UD, dt:07.04.2012.",
     page_number=4
 )
 
 with open("canvas.pdf", "wb") as output_file:
     output_file.write(modified_pdf_bytes)
 
-print("Text block added successfully!")
+print("Text added successfully!")

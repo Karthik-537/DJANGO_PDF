@@ -70,8 +70,8 @@ modified_pdf_bytes = image_block.add_image_to_existing_pdf(
     input_pdf_bytes=pdf_bytes,
     page_number=4,
     image_url="https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png",
-    x=400,
-    y=100,
+    x=300,
+    y=200,
     width=150,
     height=150
 )
