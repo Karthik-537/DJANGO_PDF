@@ -1,4 +1,4 @@
-import sign_block
+from sign_block import SignBlock
 from pathlib import Path
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfbase.ttfonts import TTFont
@@ -47,6 +47,7 @@ if Path(pdf_path).exists():
     y_position = 410  # Y-coordinate on the page
     page_number = 4   # Apply signature on page 1
 
+    sign_block = SignBlock()
     # Call function
     signed_pdf_bytes = sign_block.add_signature_to_pdf(
         input_pdf_bytes=input_pdf_bytes,

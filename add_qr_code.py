@@ -1,10 +1,11 @@
-import fitz  # PyMuPDF
-import requests
-from io import BytesIO
+from pypdf import PdfReader, PdfWriter
+from reportlab.pdfgen import canvas
+from reportlab.lib.utils import ImageReader
+from reportlab.lib.pagesizes import letter
 import qrcode
 from PIL import Image as PILImage
-from pathlib import Path
-
+import requests
+import io
 
 class QRCodeBlockCanvas:
     def _create_qr_code(self, url: str) -> PILImage.Image:
@@ -12,7 +13,7 @@ class QRCodeBlockCanvas:
         qr = qrcode.QRCode(
             version=1,
             error_correction=qrcode.constants.ERROR_CORRECT_L,
-            box_size=5,
+            box_size=10,
             border=0
         )
         qr.add_data(url)
@@ -22,7 +23,7 @@ class QRCodeBlockCanvas:
     def _add_logo_to_qr(self, qr_img: PILImage.Image, logo_url: str) -> PILImage.Image:
         """Overlay a logo at the center of the QR code."""
         response = requests.get(logo_url)
-        logo = PILImage.open(BytesIO(response.content)).convert("RGBA")
+        logo = PILImage.open(io.BytesIO(response.content)).convert("RGBA")
 
         qr_width, qr_height = qr_img.size
         logo_size = min(qr_width, qr_height) // 4
@@ -34,60 +35,75 @@ class QRCodeBlockCanvas:
 
         return qr_img
 
-    def add_qr_code_to_existing_pdf(self, input_pdf_bytes: bytes, qr_code_url: str,
-                                    page_number: int, x0: int, y0: int, x1: int, y1: int,
-                                    logo_url: str = None) -> bytes:
+    def _create_qr_overlay(self, qr_img: PILImage.Image, x0: int, y0: int, x1: int, y1: int, page_width: float,
+                           page_height: float) -> io.BytesIO:
+        """Create a PDF overlay with the QR code at the specified location."""
+        buffer = io.BytesIO()
+        c = canvas.Canvas(buffer, pagesize=(page_width, page_height))
+
+        # Convert coordinates to PDF space (flip y-axis)
+        y0, y1 = page_height - y1, page_height - y0
+
+        # Convert QR image to a format `drawImage` can use
+        qr_img_reader = ImageReader(qr_img)
+
+        # Draw the QR image on the canvas
+        c.drawImage(qr_img_reader, x0, y0, width=x1 - x0, height=y1 - y0)
+        c.save()
+        buffer.seek(0)
+
+        return buffer
+
+    def add_qr_code_to_existing_pdf(self, input_pdf_bytes: bytes, qr_code_url: str, page_number: int, x0: int, y0: int, x1: int, y1: int, logo_url: str = None) -> bytes:
         """Add a QR code to a specific page of an existing PDF and return the modified PDF as bytes."""
-        # Load the existing PDF from bytes
-        doc = fitz.open(stream=input_pdf_bytes, filetype="pdf")
+        reader = PdfReader(io.BytesIO(input_pdf_bytes))
+        writer = PdfWriter()
 
-        # Ensure the page number is within range
-        if page_number < 1 or page_number > len(doc):
-            raise ValueError(f"Invalid page number! PDF has {len(doc)} pages.")
+        for i, page in enumerate(reader.pages):
+            if i == page_number - 1:
+                page_width = float(page.mediabox.width)
+                page_height = float(page.mediabox.height)
 
-        # Get the specified page (page_number is 1-based, but PyMuPDF uses 0-based index)
-        page = doc[page_number - 1]
+                # Create the QR code
+                qr_img = self._create_qr_code(qr_code_url)
+                if logo_url:
+                    qr_img = self._add_logo_to_qr(qr_img, logo_url)
 
-        # Create the QR code
-        qr_img = self._create_qr_code(qr_code_url)
-        if logo_url:
-            qr_img = self._add_logo_to_qr(qr_img, logo_url)
+                # Create overlay with QR code
+                overlay_pdf = self._create_qr_overlay(qr_img, x0, y0, x1, y1, page_width, page_height)
+                overlay_page = PdfReader(overlay_pdf).pages[0]
 
-        # Convert QR code image to bytes
-        qr_buffer = BytesIO()
-        qr_img.save(qr_buffer, format="PNG")
-        qr_buffer.seek(0)
+                # Merge overlay onto the original page
+                page.merge_page(overlay_page)
 
-        # Insert the QR code image at the specified location on the page
-        img_rect = fitz.Rect(x0, y0, x1, y1)  # (x0, y0, x1, y1)
-        page.insert_image(img_rect, stream=qr_buffer.read())
+            writer.add_page(page)
 
-        # Save the modified PDF to bytes
-        output_pdf_bytes = BytesIO()
-        doc.save(output_pdf_bytes)
-        doc.close()
+        output_pdf_bytes = io.BytesIO()
+        writer.write(output_pdf_bytes)
+        writer.close()
 
         return output_pdf_bytes.getvalue()
 
 
 # Example Usage
 pdf_path = "modified.pdf"
-if Path(pdf_path).exists():
-    with open(pdf_path, "rb") as pdf_file:
-        input_pdf_bytes = pdf_file.read()
+with open(pdf_path, "rb") as pdf_file:
+    input_pdf_bytes = pdf_file.read()
 
-    qr_block = QRCodeBlockCanvas()
-    modified_pdf_bytes = qr_block.add_qr_code_to_existing_pdf(
-        input_pdf_bytes=input_pdf_bytes,
-        qr_code_url="https://www.amazon.in/?&tag=googhydrabk1-21&ref=pd_sl_5szpgfto9i_e&adgrpid=155259813593&hvpone=&hvptwo=&hvadid=674893540034&hvpos=&hvnetw=g&hvrand=7141621320752816559&hvqmt=e&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9062140&hvtargid=kwd-64107830&hydadcr=14452_2316413&gad_source=1",
-        page_number=4,
-        logo_url="https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png",
-        x0=54,
-        y0=374,
-        x1=204,
-        y1=524
-    )
+qr_block = QRCodeBlockCanvas()
+modified_pdf_bytes = qr_block.add_qr_code_to_existing_pdf(
+    input_pdf_bytes=input_pdf_bytes,
+    qr_code_url="https://www.amazon.in/",
+    page_number=4,
+    logo_url="https://crm-backend-media-static.s3.ap-south-1.amazonaws.com/alpha/media/tgbpass_logo.png",
+    x0=54,
+    y0=374,
+    x1=204,
+    y1=524
+)
 
-    # Save the modified PDF for verification
-    with open("final.pdf", "wb") as output_file:
-        output_file.write(modified_pdf_bytes)
+# Save the modified PDF
+with open("final.pdf", "wb") as output_file:
+    output_file.write(modified_pdf_bytes)
+
+print("QR Code added successfully!")

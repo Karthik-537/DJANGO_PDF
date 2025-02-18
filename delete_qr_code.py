@@ -1,4 +1,4 @@
-import fitz  # PyMuPDF
+import fitz
 from reportlab.lib.pagesizes import letter
 from pathlib import Path
 import io
