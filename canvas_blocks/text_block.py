@@ -2,7 +2,7 @@ from pypdf import PdfReader, PdfWriter
 from reportlab.pdfgen import canvas
 import io
 from typing import Optional
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.units import inch
 
 
 class TextBlockCanvas:
@@ -16,6 +16,8 @@ class TextBlockCanvas:
             y: float,
             text: str,
             page_number: int,
+            page_height: int,
+            page_width: int,
             font_size: Optional[int] = DEFAULT_TEXT_FONT_SIZE
     ) -> bytes:
         reader = PdfReader(io.BytesIO(input_pdf_bytes))
@@ -23,8 +25,6 @@ class TextBlockCanvas:
 
         for i, page in enumerate(reader.pages):
             if i == page_number - 1:
-                page_width = letter[0]
-                page_height = letter[1]
                 overlay_pdf = self._draw_text(
                     x=x,
                     y=y,
@@ -55,41 +55,63 @@ class TextBlockCanvas:
         c = canvas.Canvas(packet, pagesize=(page_width, page_height))
 
         y = page_height - y
-        words = text.split(' ')
-        current_line = ''
+        # words = text.split(' ')
+        # current_line = ''
         line_height = 14
-        max_width = page_width - x - 48
+        max_width = 300
         c.setFont(self.FONT, font_size)
-        for word in words:
-            test_line = current_line + ' ' + word if current_line else word
-            test_width = c.stringWidth(test_line, self.FONT, font_size)
-            if test_width > max_width:
+        count = 0
+        text_count = 1
+        while y > inch:
+            words = text.split(' ')
+            current_line = ''
+            line_count = 1
+            for word in words:
+                test_line = current_line + ' ' + word if current_line else word
+                test_width = c.stringWidth(test_line, self.FONT, font_size)
+                if test_width > max_width and line_count == 1:
+                    current_line = f"{text_count}.{current_line}"
+                    c.drawString(x, y, current_line)
+                    y -= line_height
+                    current_line = word
+                    line_count += 1
+                elif test_width > max_width:
+                    c.drawString(x, y, current_line)
+                    y -= line_height
+                    current_line = word
+                    line_count += 1
+                else:
+                    current_line = test_line
+            if current_line:
                 c.drawString(x, y, current_line)
-                y -= line_height
-                current_line = word
-            else:
-                current_line = test_line
-        if current_line:
-            c.drawString(x, y, current_line)
+            text_count += 1
+            y -= 20
+            count += 1
+        print(count)
         c.save()
         packet.seek(0)
 
         return packet
 
 
-pdf_path = "modified.pdf"
+pdf_path = "example.pdf"
 with open(pdf_path, "rb") as pdf_file:
     pdf_bytes = pdf_file.read()
 
 text_block = TextBlockCanvas()
 modified_pdf_bytes = text_block.add_text_to_existing_pdf(
     input_pdf_bytes=pdf_bytes,
-    x=450,
-    y=150,
-    text="The Building permission is sanctioned subject to following conditions."
-         " The applicant should follow the clause 5.f (i) (ii) (iii) (iv) (v)( vii) (xi)&(xiv) "
-         "of G.O.Ms.No.168, MA&UD, dt:07.04.2012.",
-    page_number=4
+    x=72,
+    y=72,
+    text="In the heart of a bustling city, quiet moments often go unnoticed. Beneath towering "
+         "skyscrapers and busy streets, tiny pockets of serenity await discovery. A gentle breeze"
+         " stirs the leaves, and soft whispers of nature remind us to pause. Every corner holds "
+         "a story, and every face reflects hope, resilience, and dreams of a brighter tomorrow."
+         " Amid the urban clamor, hidden gardens bloom with colors and fragrances that lift the "
+         "spirit, inviting passersby to cherish fleeting beauty. Sunlight graces every bloom!!!",
+    page_height=6741,
+    page_width=4768,
+    page_number=1
 )
 
 with open("canvas.pdf", "wb") as output_file:
